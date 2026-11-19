@@ -9,7 +9,11 @@ Use the [brand identity kit](brand-identity/README.md) to develop a product name
 3. Start with the [creative brief](brand-identity/01-strategy/brief.md). Use the [asset manifest](brand-identity/09-assets/manifest.json) for PNGs and the [review record](brand-identity/08-review/review.md) for the owner's decisions. Keep drafts separate from approved exports.
 4. Run `python3 brand-identity/verify.py` from your repository root. On Windows, `py -3 brand-identity/verify.py` runs the same check. The verifier uses the Python 3.10+ standard library and works with local, private, and public repositories.
 
-For a filled example, see the [BART brand kit](https://github.com/vixttha/Brand-Identity-Template/tree/BART-Brand-Identity/brand-identity). Its Facet logo and wordmark are BART review drafts with project-specific reuse terms.
+For a filled example, see the [BART brand kit](https://github.com/vixttha/Brand-Identity-Template/tree/BART-Brand-Identity/brand-identity). Its Facet artwork is a rejected historical draft with project-specific reuse terms.
+
+## Creative direction and confirmation
+
+The [creative direction workflow](brand-identity/01-strategy/creative-direction.md) records the initial logo category, art style, category fit, rated examples, selected direction and exact owner-confirmed names before artwork. See the [BART audit and worked shortlist](docs/BART-creative-audit.md) for a pre-artwork example.
 
 ## Source and checks
 

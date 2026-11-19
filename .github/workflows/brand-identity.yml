@@ -31,6 +31,9 @@ jobs:
           python3 brand-identity/verify.py
           printf 'Brand kit checkout: %s\n' "$BRAND_CHECKOUT_SHA" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Test the creative direction gate
+        run: python3 -m unittest discover -s brand-identity -p 'test_verify.py' -v
+
       - name: Verify the kit in an existing Git repository
         run: |
           consumer="$(mktemp -d)"

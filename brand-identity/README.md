@@ -16,10 +16,10 @@ A workspace for a project's look, language, and public identity. The owner direc
 
 ## Working session
 
-1. Capture the owner's audience, practical use, visual references, and dislikes in the brief. Write success checks for the first place the brand will appear.
-2. Develop a few visually distinct ideas when the brief leaves the direction open. Show them in the same size and context. Ask the owner to choose the direction or identify the change they want. The owner can describe feedback in ordinary terms, such as whether the silhouette feels too busy at icon size.
-3. Generate or refine every proposed brand image with **@Images** (ChatGPT image generation). Deliver PNG exports and keep the image-generation source record. If image generation is unavailable, record the blocker and keep the image item pending.
-4. Check spelling, optical spacing, meaningful small sizes, light and dark surfaces, and single-color reproduction where needed. Show any changes beside the previous draft. Use one recorded accent and a clear shape hierarchy until a second accent serves a specific purpose.
-5. Register each file in the manifest and record the owner's decisions. Keep draft filenames distinct from approved assets. Apply the approved kit only to the surfaces the owner authorizes.
+1. Record the product, audience, first placement, and the owner's taste in the [brief](01-strategy/brief.md).
+2. Complete the [creative direction workflow](01-strategy/creative-direction.md). Pick an initial logo category, pick an art style, screen categories for brand fit, write three distinct concept examples, rate them on the same criteria, and select one.
+3. Present the ranked examples and ask the owner whether the exact product name and wordmark text are locked for this project. Wait for an explicit answer. Record it in the [decision record](01-strategy/creative-decision.json). If either string changes, reconfirm both together.
+4. Run `python3 brand-identity/verify.py --ready-for-artwork`. After it passes, use **@Images** to create the selected logo and wordmark PNGs and record their generation brief. Develop the slogan, typography, color, icon, and application guidance around the selected idea.
+5. Review exact lettering, silhouette in one color, small-size use, light/dark placement, and the combined lockup. Register the files and record owner feedback. Roll out only to authorized surfaces.
 
-The design review can be run from this folder. `python brand-identity/verify.py` checks the kit inventory and PNG metadata from the repository root. PNG structure checks and visual acceptance have separate outcomes.
+Run `python3 brand-identity/verify.py` to check the kit and any registered PNGs. A new project can pass inventory checks while it waits for confirmation. A populated project inventory requires a complete creative decision and the logo and wordmark PNGs. The verifier checks the record and asset files. The owner reviews the cited confirmation and the visual work.
