@@ -9,3 +9,7 @@ Use the [brand identity kit](brand-identity/README.md) to develop your product's
 3. In the copied `brand-identity/09-assets/manifest.json`, change `"kind": "template"` to `"kind": "project"`. Leave `assets` empty until you register your exports.
 4. Start the [creative brief](brand-identity/01-strategy/brief.md). Follow the [creative direction workflow](brand-identity/01-strategy/creative-direction.md) before generating artwork with @Images.
 5. From your repository root, run `python3 brand-identity/verify.py`. On Windows, use `py -3 brand-identity/verify.py`. The verifier uses Python 3.10+ and its standard library.
+
+## Review a template change
+
+The pull request check runs on GitHub's combined base and head commit. The Actions job summary records both parents and the tested commit. Before merging, compare the recorded base and head with the current PR. If either changed, update the PR branch with the latest base and require a passing run for the new combination. Branch push checks cover the source checkout.
