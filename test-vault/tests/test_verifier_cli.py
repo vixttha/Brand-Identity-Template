@@ -239,7 +239,8 @@ class VerifierCLITests(AdoptedKit):
         outside = self.root.parent / "outside.md"
         outside.write_text("# Outside\n", encoding="utf-8")
         content = self.brief.read_text(encoding="utf-8")
-        for target in ("missing.md", "../../../outside.md"):
+        for target in ("missing.md", "../../docs/missing.md", "../../../outside.md",
+                       "%2e%2e/%2e%2e/%2e%2e/outside.md"):
             with self.subTest(target=target):
                 self.brief.write_text(content, encoding="utf-8")
                 self.add_link(target)
@@ -254,62 +255,44 @@ class VerifierCLITests(AdoptedKit):
 
 
 class HandoffIssue13(AdoptedKit):
-    def setUp(self):
-        super().setUp()
+    def assert_approval_required(self, logo_status, wordmark_status):
         self.add_assets("logo", "wordmark")
-        self.assert_accepted(self.run_verifier("--ready-for-handoff"))
-        self.results = {}
-        for statuses in (
-            ("draft", "draft"),
-            ("test", "test"),
-            ("approved", "draft"),
-            ("test", "approved"),
-        ):
-            for asset, status in zip(self.manifest["assets"], statuses):
-                asset["status"] = status
-            self.save_manifest()
-            self.assert_accepted(self.run_verifier())
-            result = self.run_verifier("--ready-for-handoff")
-            if result.returncode == 0:
-                self.assertIn("2 PNGs", result.stdout)
-            else:
-                # A crash is not the expected rejection signal.
-                self.assertIn("approved", result.stderr.lower())
-                self.assertNotIn("Verified project kit", result.stdout)
-            self.results[statuses] = result.returncode
+        for asset, status in zip(self.manifest["assets"], (logo_status, wordmark_status)):
+            asset["status"] = status
+        self.save_manifest()
+        self.assert_accepted(self.run_verifier())
+        self.assert_rejected(self.run_verifier("--ready-for-handoff"), "status 'approved'")
 
-    @unittest.expectedFailure
     def test_draft_only_cannot_be_handed_off(self):
-        self.assertNotEqual(self.results["draft", "draft"], 0)
+        self.assert_approval_required("draft", "draft")
 
-    @unittest.expectedFailure
     def test_test_only_cannot_be_handed_off(self):
-        self.assertNotEqual(self.results["test", "test"], 0)
+        self.assert_approval_required("test", "test")
 
-    @unittest.expectedFailure
     def test_approved_logo_does_not_make_a_draft_wordmark_ready(self):
-        self.assertNotEqual(self.results["approved", "draft"], 0)
+        self.assert_approval_required("approved", "draft")
 
-    @unittest.expectedFailure
     def test_approved_wordmark_does_not_make_a_test_logo_ready(self):
-        self.assertNotEqual(self.results["test", "approved"], 0)
+        self.assert_approval_required("test", "approved")
+
+    def test_draft_can_coexist_with_approved_handoff_assets(self):
+        self.add_assets("logo", "wordmark")
+        filename, payload = "logo-draft.png", rgba_pattern()
+        (self.asset_dir / filename).write_bytes(payload)
+        self.manifest["assets"].append(asset_record(filename, payload, role="logo", status="draft"))
+        self.save_manifest()
+        self.assert_accepted(self.run_verifier("--ready-for-handoff"), "3 PNGs")
 
 
 class EvidenceLinkIssue14(AdoptedKit):
-    def setUp(self):
-        super().setUp()
-        self.assert_accepted(self.run_verifier())
+    def test_existing_evidence_in_adopting_repository_is_allowed(self):
         docs = self.root / "docs"
         docs.mkdir()
         (docs / "evidence.md").write_text("# Product evidence\n", encoding="utf-8")
+        (docs / "research notes.md").write_text("# Research\n", encoding="utf-8")
         self.add_link("../../docs/evidence.md")
-        self.result = self.run_verifier()
-        if self.result.returncode:
-            self.assertIn("missing or external local path ../../docs/evidence.md", self.result.stderr)
-
-    @unittest.expectedFailure
-    def test_existing_evidence_in_adopting_repository_is_allowed(self):
-        self.assert_accepted(self.result)
+        self.add_link("../../docs/research%20notes.md#research")
+        self.assert_accepted(self.run_verifier())
 
 
 if __name__ == "__main__":

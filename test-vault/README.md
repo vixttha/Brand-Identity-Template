@@ -30,6 +30,6 @@ The adoption check needs Git, curl, unzip, tar and network access to the public 
 
 The browser script uses a temporary copy of the kit. The verifier validates each PNG against the fixture manifest. Chromium consumes the same registered filenames. A Chromium receipt requires one passing result for each test in [the required test list](browser/required-tests.json). Update that list when adding or renaming a required browser test. The combined Lydite receipt binds both results to the clean checkout, the v2 case plan digest, and the shared PNG manifest digest. The browser tests use synthetic, known pixel values. Screenshots of approved artwork, minimum display sizes, official SVGs, and visual approval of lettering and lockups require project assets and owner decisions.
 
-## Known failures
+## Handoff and evidence-link regressions
 
-[Issue #13](https://github.com/vixttha/Brand-Identity-Template/issues/13) has four expected failures covering draft-only, test-only, and both directions of mixed-status handoff. [Issue #14](https://github.com/vixttha/Brand-Identity-Template/issues/14) has one expected failure for an adopter-local evidence file. Each fixture checks the observed symptom. A fix produces an unexpected success until its expected-failure marker is removed.
+Ordinary regression tests cover draft-only, test-only and mixed-status handoffs ([issue #13](https://github.com/vixttha/Brand-Identity-Template/issues/13)) and existing adopter-local evidence links ([issue #14](https://github.com/vixttha/Brand-Identity-Template/issues/14)).

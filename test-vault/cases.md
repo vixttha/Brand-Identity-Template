@@ -1,6 +1,6 @@
 # Brand Identity Template test catalog
 
-Each row states a distinct behavior and links to its assertions. Run commands, expected failures, and evidence limits are in the [vault README](README.md).
+Each row states a distinct behavior and links to its assertions. Run commands and evidence limits are in the [vault README](README.md).
 
 | Case | Area | Priority | Suggested implementation | Expected outcome |
 |---|---|---|---|---|
@@ -8,13 +8,13 @@ Each row states a distinct behavior and links to its assertions. Run commands, e
 | KIT-002 | Artwork | P0 | [Python verifier CLI](tests/test_verifier_cli.py) | The template cannot enter artwork. An unconfirmed project can remain a work in progress. Stale confirmation blocks registered art. |
 | KIT-003 | Scoring | P1 | [Python verifier CLI](tests/test_verifier_cli.py) | Weighted scoring rules out the lower total and permits either tied leader. Invalid concept IDs, categories, scores and required decision text fail. |
 | KIT-004 | Handoff | P0 | [Python verifier CLI](tests/test_verifier_cli.py) | An approved logo and wordmark pass. Omitting either role fails. Draft and test assets remain valid inventory. |
-| KIT-005 | Handoff approval | P0 | [Python issue #13 regressions](tests/test_verifier_cli.py) | Draft-only, test-only and either mixed-status inventory should fail final handoff. Four expected failures reproduce [issue #13](https://github.com/vixttha/Brand-Identity-Template/issues/13). |
+| KIT-005 | Handoff approval | P0 | [Python issue #13 regressions](tests/test_verifier_cli.py) | Draft-only, test-only and either mixed-status inventory fail final handoff. Drafts can coexist with an approved pair. Regression tests cover [issue #13](https://github.com/vixttha/Brand-Identity-Template/issues/13). |
 | KIT-006 | Inventory | P0 | [Python verifier CLI](tests/test_verifier_cli.py) | Duplicate filenames, symlinked exports and registered files missing from disk fail. |
 | KIT-007 | Asset metadata | P0 | [Python verifier CLI](tests/test_verifier_cli.py) | Width and height must be JSON integers and agree with the file, as must alpha-channel metadata and SHA-256. Alt text, provenance, role and status must be present. |
 | KIT-008 | License and docs | P1 | [Python verifier CLI](tests/test_verifier_cli.py) | Blank or symlinked licenses and missing document titles fail verification. |
 | LINK-001 | Markdown links | P1 | [Python verifier CLI](tests/test_verifier_cli.py) | An encoded local path with a fragment passes. Web URLs and fragment-only links do not require local files. |
 | LINK-002 | Repository boundary | P0 | [Python verifier CLI](tests/test_verifier_cli.py) | Missing local targets and paths that resolve outside the adopter, including a symlink where available, fail. |
-| LINK-003 | Adopter evidence | P1 | [Python issue #14 regression](tests/test_verifier_cli.py) | An existing adopter-local evidence file should pass. One expected failure reproduces [issue #14](https://github.com/vixttha/Brand-Identity-Template/issues/14). |
+| LINK-003 | Adopter evidence | P1 | [Python issue #14 regression](tests/test_verifier_cli.py) | Existing adopter-local evidence links pass, including percent-encoded names with fragments. Regression tests cover [issue #14](https://github.com/vixttha/Brand-Identity-Template/issues/14). |
 | PNG-001 | Pixel encoding | P1 | [Python PNG parser](tests/test_png_encodings.py) | Opaque and alpha color types yield the right channel metadata. Packed rows and nontrivial Adam7 passes require the correct byte count. |
 | PNG-002 | PNG headers | P0 | [Python PNG parser](tests/test_png_encodings.py) | Invalid dimensions, color type and bit depth fail. |
 | PNG-003 | Palette | P0 | [Python PNG parser](tests/test_png_encodings.py) | Indexed PNGs require one well-formed palette of a size permitted by their bit depth. |

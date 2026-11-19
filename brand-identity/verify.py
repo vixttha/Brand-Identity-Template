@@ -37,6 +37,7 @@ def check_license():
 
 
 def check_docs():
+    project_root = KIT.parent
     for relative in REQUIRED_DOCS:
         source = KIT / relative
         content = source.read_text(encoding="utf-8")
@@ -46,7 +47,7 @@ def check_docs():
             if target.scheme or target.netloc or not target.path:
                 continue
             destination = (source.parent / unquote(target.path)).resolve()
-            require(destination.is_relative_to(KIT) and destination.exists(),
+            require(destination.is_relative_to(project_root) and destination.exists(),
                     f"{relative}: missing or external local path {target.path}")
 
 
@@ -160,7 +161,7 @@ def main():
     parser.add_argument("--ready-for-artwork", action="store_true",
                         help="require a scored direction and explicit owner name confirmation")
     parser.add_argument("--ready-for-handoff", action="store_true",
-                        help="require a project inventory with both logo and wordmark PNGs")
+                        help="require approved logo and wordmark PNGs in the project inventory")
     args = parser.parse_args()
     check_license()
     check_docs()
@@ -175,8 +176,9 @@ def main():
     validate_production(kind, assets, args.ready_for_artwork, decision)
     if args.ready_for_handoff:
         require(kind == "project", "Start a project kit before checking handoff")
-        require({"logo", "wordmark"} <= {asset["role"] for asset in assets},
-                "Project handoff needs both logo and wordmark PNGs")
+        approved_roles = {asset["role"] for asset in assets if asset.get("status") == "approved"}
+        require({"logo", "wordmark"} <= approved_roles,
+                "Project handoff needs both logo and wordmark PNGs with status 'approved'")
     if args.ready_for_artwork:
         print("Creative decision and owner name confirmation recorded")
     for asset in assets:
