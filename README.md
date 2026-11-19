@@ -1,6 +1,6 @@
 # BART Brand Identity
 
-[Open the filled BART kit](brand-identity/README.md) to see the Facet logo, wordmark, strategy, and review status. The [asset inventory](brand-identity/09-assets/manifest.json) records the two original @Images PNGs as drafts.
+[Open the current design review](brand-identity/08-review/concept-review.md) for the ranked logo concepts, slogan options, and artwork checks. [The BART kit](brand-identity/README.md) includes the historical Facet draft. The [asset inventory](brand-identity/09-assets/manifest.json) records the two original @Images PNGs as drafts.
 
 For a new product, start from the [reusable Brand Identity Template v0.0.1](https://github.com/vixttha/Brand-Identity-Template/tree/Brand-Identity-template-v0.0.1).
 

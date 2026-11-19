@@ -1,5 +1,7 @@
 # Review and decisions
 
+The table below records the initial Facet review. See the [current concept review](concept-review.md) for the rejection, shortlist, and next artwork checks.
+
 | Item | State | Basis |
 | --- | --- | --- |
 | Product and agent names, slogan | Recorded | [GitHub issue #62](https://github.com/vixttha/Blender-Agent-Refinement-Toolkit/issues/62) |

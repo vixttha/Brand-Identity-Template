@@ -2,7 +2,11 @@
 
 **Blender-Agent Refinement Toolkit** is the product. **BART** is the agent. **Give shape to an idea.** is the slogan recorded in the [rebrand decision](https://github.com/vixttha/Blender-Agent-Refinement-Toolkit/issues/62).
 
-## Facet
+## Current design review
+
+See the [logo and slogan record](08-review/concept-review.md) for the ranked concepts, recommendation, and check criteria. The Facet draft was rejected in creative review.
+
+## Historical Facet draft
 
 The mark pairs a dark mesh plane with a mint facet, separated by a diagonal break. The BART wordmark repeats the angle in its A counter and R leg. This draft uses the same idea at two scales: the symbol for recognition and the full lettering when readers need the name.
 
