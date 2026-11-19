@@ -1,13 +1,33 @@
 # Brand Identity Template Test Vault
 
-This branch stages the latest merged Lydite Test Vault starter, **v0.0.3**, from [the pinned upstream starter](https://github.com/vixttha/Lydite-Test-Vault-Template/tree/fe7b00aa17862d7a01dfd15481594be837bc6d9f/starter). The upstream [version manifest](https://github.com/vixttha/Lydite-Test-Vault-Template/blob/fe7b00aa17862d7a01dfd15481594be837bc6d9f/versions/manifest.json) and [public validation run](https://github.com/vixttha/Lydite-Test-Vault-Template/actions/runs/44475200133) identify the source. Lydite's [license](LICENSE) accompanies the copied files.
+This vault uses the [Lydite Test Vault v0.0.3 starter](https://github.com/vixttha/Lydite-Test-Vault-Template/tree/fe7b00aa17862d7a01dfd15481594be837bc6d9f/starter). See the upstream [version manifest](https://github.com/vixttha/Lydite-Test-Vault-Template/blob/fe7b00aa17862d7a01dfd15481594be837bc6d9f/versions/manifest.json) and the copied [license](LICENSE).
 
-## Prepared for test planning
+| Suite | What it proves |
+|---|---|
+| Python | The adopted verifier's exit status, artwork and handoff gates, manifest and PNG integrity, evidence-link boundaries, and Lydite catalog and receipt verdicts. |
+| JavaScript | Chromium decodes accepted PNG bytes and composites transparent pixels correctly over light and dark backgrounds. |
+| Bash | The ZIP URLs produce the expected kit, adoption preserves an existing repository, and checkout receipts match actual Git commits and ordered PR parents. |
 
-- [Cases](cases.md) is an empty project catalog.
-- [Case and run receipt](case-and-receipt.md) defines what each result should record.
-- [Execution evidence](evidence.md), [catalog validator](validate_catalog.py), and [receipt verifier](verify_receipts.py) supply the starter's validation tools.
-- [Workflow template](templates/test-vault.yml) preserves the original GitHub Actions recipe outside the active workflows directory.
-- [Changelog](CHANGELOG.md) and [upgrade notes](UPGRADE.md) describe this starter version.
+Use the [case catalog](cases.md) for the link to each assertion and the [active workflow](../.github/workflows/lydite-mechanical.yml) for public-runner coverage. The [case and receipt reference](case-and-receipt.md), [execution evidence guide](evidence.md), and [starter workflow](templates/test-vault.yml) remain available for recording further cases.
 
-The version's catalog validator expects at least one real case. Once cases are planned and entered, run `python3 test-vault/validate_catalog.py` from the repository root. The source starter's example cases, language demos, and sample tests remain available upstream. The project can choose test languages, cases, and runner wiring when test planning begins.
+## Run locally
+
+Run from the repository root. The full vault Python suite and receipt verifier require Python 3.12. The kit verifier has a separate Python 3.10 compatibility check.
+
+```sh
+python3 test-vault/validate_catalog.py
+python3 -B -m unittest discover -s test-vault/tests -v
+bash test-vault/tests/test_checkout.sh
+bash test-vault/tests/adopt_archive.sh
+npm --prefix test-vault/browser ci
+(cd test-vault/browser && npx playwright install --with-deps --only-shell chromium)
+bash test-vault/tests/browser.sh
+```
+
+The adoption check needs Git, curl, unzip, tar and network access to the public GitHub archives. For local browser runs with an already installed Chromium, set `BRAND_BROWSER_EXECUTABLE` to its absolute path before running the browser script.
+
+The browser script uses a temporary copy of the kit. The verifier validates each PNG against the fixture manifest. Chromium consumes the same registered filenames. The combined Lydite receipt binds both results to the checkout and the manifest digest. The browser tests use synthetic, known pixel values. Screenshots of approved artwork, minimum display sizes, official SVGs, and visual approval of lettering and lockups require project assets and owner decisions.
+
+## Known failures
+
+[Issue #13](https://github.com/vixttha/Brand-Identity-Template/issues/13) has four expected failures covering draft-only, test-only, and both directions of mixed-status handoff. [Issue #14](https://github.com/vixttha/Brand-Identity-Template/issues/14) has one expected failure for an adopter-local evidence file. Each fixture checks the observed symptom. A fix produces an unexpected success until its expected-failure marker is removed.

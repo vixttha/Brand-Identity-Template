@@ -1,0 +1,111 @@
+name: Lydite mechanical checks
+
+on:
+  push:
+    branches: [lydite-test-vault]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUTF8: '1'
+  PYTHONHASHSEED: '0'
+
+jobs:
+  python:
+    name: Python ${{ matrix.python }} on ${{ matrix.os }}
+    if: github.event.repository.private == false
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.12'
+          - os: windows-latest
+            python: '3.12'
+          - os: ubuntu-latest
+            python: '3.10'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run existing kit and adoption checks
+        shell: bash
+        run: |
+          python brand-identity/verify.py
+          python -m unittest discover -s brand-identity -p 'test_*.py' -v
+          python .github/scripts/smoke_adoption.py
+      - name: Run Lydite CLI, PNG and receipt cases
+        if: matrix.python == '3.12'
+        shell: bash
+        run: |
+          python test-vault/validate_catalog.py
+          python -m unittest discover -s test-vault/tests -v
+      - name: Verify the kit's minimum supported Python version
+        if: matrix.python == '3.10'
+        shell: bash
+        run: |
+          python -m unittest discover -s test-vault/tests -p 'test_verifier_cli.py' -v
+          python -m unittest discover -s test-vault/tests -p 'test_png_encodings.py' -v
+
+  adoption:
+    name: Bash ZIP adoption and checkout
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Verify the actual checkout and its source revisions
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          args=("$GITHUB_SHA")
+          if [[ "$GITHUB_EVENT_NAME" == pull_request ]]; then
+            args+=("$PR_BASE_SHA" "$PR_HEAD_SHA")
+          fi
+          bash test-vault/tests/check_checkout.sh "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Exercise stale and mismatched Git checkouts
+        shell: bash
+        run: bash test-vault/tests/test_checkout.sh
+      - name: Download and adopt both public ZIPs
+        shell: bash
+        run: bash test-vault/tests/adopt_archive.sh
+
+  browser:
+    name: JavaScript Chromium rendering
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      - name: Install pinned Playwright dependencies
+        working-directory: test-vault/browser
+        run: |
+          npm ci
+          npx playwright install --with-deps --only-shell chromium
+      - name: Verify and render the shared PNG inventory
+        run: bash test-vault/tests/browser.sh

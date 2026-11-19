@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "case_id": "PNG-010",
+  "required_checks": ["python-verifier", "chromium"],
+  "shared_evidence": true
+}
