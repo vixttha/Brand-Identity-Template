@@ -182,6 +182,27 @@ class VerifierCLITests(AdoptedKit):
         (self.kit / "LICENSE").write_text(" \n", encoding="utf-8")
         self.assert_rejected(self.run_verifier(), "LICENSE file is empty")
 
+    def test_linked_license_fails_even_when_target_is_readable(self):
+        license_path = self.kit / "LICENSE"
+        target = self.kit / "license-source"
+        license_path.rename(target)
+        self.symlink_or_skip(license_path, target)
+        self.assert_rejected(self.run_verifier(), "Missing regular brand identity LICENSE")
+
+    def test_linked_png_cannot_satisfy_registration(self):
+        self.add_assets("logo")
+        logo = self.asset_dir / "logo.png"
+        target = self.kit / "logo-source"
+        logo.rename(target)
+        self.symlink_or_skip(logo, target)
+        self.assert_rejected(self.run_verifier(), "Missing regular PNG: logo.png")
+
+    def symlink_or_skip(self, link, target):
+        try:
+            link.symlink_to(target)
+        except (NotImplementedError, OSError) as error:
+            self.skipTest(f"Symlink creation unavailable: {error}")
+
     def test_missing_title_fails(self):
         self.brief.write_text("A brief with its title removed.\n", encoding="utf-8")
         self.assert_rejected(self.run_verifier(), "brief.md: missing title")
@@ -209,10 +230,7 @@ class VerifierCLITests(AdoptedKit):
     def test_resolved_symlink_cannot_leave_repository(self):
         outside = self.root.parent / "outside.md"
         outside.write_text("# Outside\n", encoding="utf-8")
-        try:
-            (self.brief.parent / "shortcut.md").symlink_to(outside)
-        except (NotImplementedError, OSError) as error:
-            self.skipTest(f"Symlink creation unavailable: {error}")
+        self.symlink_or_skip(self.brief.parent / "shortcut.md", outside)
         self.add_link("shortcut.md")
         self.assert_rejected(self.run_verifier(), "shortcut.md")
 

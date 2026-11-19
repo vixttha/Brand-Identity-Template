@@ -56,6 +56,33 @@ for (const [filename, pixels] of encodings) {
   });
 }
 
+test('PNG-012 decodes a truecolor transparency key without losing other colors', async ({ page }) => {
+  expect(await draw(page, 'rgb-keyed.png')).toEqual({
+    width: 4,
+    height: 1,
+    pixels: [255, 0, 0, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255],
+  });
+});
+
+test('PNG-012 converts 16-bit samples while preserving the alpha pattern', async ({ page }) => {
+  expect(await draw(page, 'rgba16.png')).toEqual({
+    width: 4,
+    height: 1,
+    pixels: [255, 0, 0, 255, 0, 0, 0, 0, 0, 0, 255, 128, 64, 128, 255, 255],
+  });
+});
+
+test('PNG-012 reconstructs a diagonal across all seven Adam7 passes', async ({ page }) => {
+  const expected = [];
+  for (let y = 0; y < 5; y += 1) {
+    for (let x = 0; x < 5; x += 1) {
+      const level = x === y ? 255 : 0;
+      expected.push(level, level, level, 255);
+    }
+  }
+  expect(await draw(page, 'adam7-diagonal.png')).toEqual({ width: 5, height: 5, pixels: expected });
+});
+
 for (const [theme, background, empty, edge] of [
   ['light', '#ffffff', [255, 255, 255, 255], [127, 127, 255, 255]],
   ['dark', '#000000', [0, 0, 0, 255], [0, 0, 128, 255]],

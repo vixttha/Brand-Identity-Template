@@ -50,11 +50,25 @@ def write_browser_inputs(kit):
     ))
     grayscale = png(4, 1, 8, 4, bytes([0, 0, 255, 64, 0, 128, 128, 255, 255]))
     rgb = png(4, 1, 8, 2, bytes([0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255]))
+    rgb_keyed = png(4, 1, 8, 2, bytes([0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255]),
+                    metadata=((b"tRNS", struct.pack(">HHH", 0, 255, 0)),))
+    rgba16 = png(4, 1, 16, 6, b"\0" + struct.pack(
+        ">16H", 65535, 0, 0, 65535, 0, 65535, 0, 0,
+        0, 0, 65535, 0x8080, 0x4040, 0x8080, 65535, 65535,
+    ))
+    # One-bit white diagonal on black. Each tuple gives the packed rows of one pass.
+    adam7_passes = ((0x80,), (0x00,), (0x40,), (0x00, 0x00), (0x40,),
+                    (0x00, 0x00, 0x00), (0x40, 0x10))
+    scanlines = bytes(byte for rows in adam7_passes for row in rows for byte in (0, row))
+    interlaced = png(5, 5, 1, 0, scanlines, interlace=1)
     patterns = (
-        ("rgba.png", rgba_pattern(), True, "logo"),
-        ("indexed.png", indexed, False, "wordmark"),
-        ("grayscale-alpha.png", grayscale, True, "logo"),
-        ("rgb.png", rgb, False, "wordmark"),
+        ("rgba.png", rgba_pattern(), True, "logo", 4, 1),
+        ("indexed.png", indexed, False, "wordmark", 4, 1),
+        ("grayscale-alpha.png", grayscale, True, "logo", 4, 1),
+        ("rgb.png", rgb, False, "wordmark", 4, 1),
+        ("rgb-keyed.png", rgb_keyed, False, "logo", 4, 1),
+        ("rgba16.png", rgba16, True, "logo", 4, 1),
+        ("adam7-diagonal.png", interlaced, False, "wordmark", 5, 5),
     )
     asset_dir = kit / "09-assets"
     manifest_path = asset_dir / "manifest.json"
@@ -63,9 +77,11 @@ def write_browser_inputs(kit):
     if manifest["kind"] != "template" or manifest["assets"]:
         raise ValueError("Browser fixtures require a clean template copy")
     manifest["kind"] = "project"
-    for name, payload, alpha, role in patterns:
+    for name, payload, alpha, role, width, height in patterns:
         (asset_dir / name).write_bytes(payload)
-        manifest["assets"].append(asset_record(name, payload, alpha=alpha, role=role))
+        manifest["assets"].append(
+            asset_record(name, payload, alpha=alpha, role=role, width=width, height=height)
+        )
     write_json(manifest_path, manifest)
 
 
