@@ -5,7 +5,7 @@ A workspace for a project's look, language, and public identity. The owner direc
 | Folder | Contents |
 | --- | --- |
 | [Strategy](01-strategy/brief.md) | Product, audience, first surface, comparable references, and creative brief |
-| [Naming](02-naming/naming.md) | Product name, aliases, casing, pronunciation, and collision research |
+| [Naming](02-naming/naming.md) | Naming research, aliases, pronunciation, and collision checks |
 | [Voice and slogan](03-messaging/voice.md) | Slogan, short descriptor, tone, and claims |
 | [Logo](04-logo/logo.md) | Symbol, silhouette, clear space, variants, and minimum size |
 | [Wordmark](05-wordmark/wordmark.md) | Lettering, spelling, spacing, and logo lockup |
@@ -20,7 +20,7 @@ In your copied kit, set `kind` to `"project"` in [the asset manifest](09-assets/
 
 1. Record the product, audience, first placement, and the owner's taste in the [brief](01-strategy/brief.md).
 2. Complete the [creative direction workflow](01-strategy/creative-direction.md). Pick an initial logo category, pick an art style, screen categories for brand fit, write three distinct concept examples, rate them on the same criteria, and select one.
-3. Present the ranked examples and ask the owner whether the exact product name and wordmark text are locked for this project. Wait for an explicit answer. Record it in the [decision record](01-strategy/creative-decision.json). If either string changes, reconfirm both together.
+3. Present the ranked examples and ask the owner whether the exact product name and wordmark text are locked for this project. The [decision record](01-strategy/creative-decision.json) is the source for both exact strings. Update its `names` before presenting them. Wait for an explicit answer and record that answer in `confirmation`. If either string changes, reconfirm both together.
 4. Run `python3 brand-identity/verify.py --ready-for-artwork`. After it passes, use **@Images** to create the selected logo and wordmark PNGs and record their generation brief. Develop the slogan, typography, color, icon, and application guidance around the selected idea.
 5. Review exact lettering, silhouette in one color, small-size use, light/dark placement, and the combined lockup. Register the files and record owner feedback. Roll out only to authorized surfaces.
 

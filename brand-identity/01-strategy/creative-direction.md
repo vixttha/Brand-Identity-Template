@@ -28,7 +28,7 @@ Copy the confirmed strings into the confirmation object in the [decision record]
 - `initial_category` and `art_style` are nonempty strings. `category_fit` maps each category to a boolean `fits` and a `reason`.
 - `concepts` contains objects with an `id`, `category`, `art_style`, `example`, `rationale`, and a `scores` object. The four score keys are `brand_fit`, `artistic_character`, `distinctiveness`, and `versatility`.
 - `selected_concept` is the selected ID. `selection_reason` records why it leads.
-- `names` contains the proposed `product` and `wordmark` strings. `confirmation` starts as null. Once the owner confirms both strings, set `confirmation.product`, `confirmation.wordmark`, and `confirmation.reference` to the exact names and a publishable decision reference.
+- `names` is the source for the current exact `product` and `wordmark` strings. Apply each name change here before seeking confirmation. `confirmation` starts as null. Once the owner confirms both strings, set `confirmation.product`, `confirmation.wordmark`, and `confirmation.reference` to the exact names and a publishable decision reference.
 - The [asset manifest](../09-assets/manifest.json) can be populated after the decision passes. See [review](../08-review/review.md) for the visual checks and owner decisions.
 
 Continue with the [logo](../04-logo/logo.md), [wordmark](../05-wordmark/wordmark.md), and [visual system](../06-visual-system/system.md).

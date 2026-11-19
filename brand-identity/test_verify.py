@@ -54,10 +54,14 @@ class ArtworkGateTests(unittest.TestCase):
             validate_production("project", [], True, decision)
 
     def test_exact_confirmation_must_match_current_name(self):
-        decision = scored_decision()
-        decision["names"]["wordmark"] = "Example"
-        with self.assertRaisesRegex(ValueError, "exact wordmark"):
-            validate_production("project", [], True, decision)
+        for key, new_name in (("product", "Renamed Toolkit"), ("wordmark", "Example")):
+            with self.subTest(key=key):
+                decision = scored_decision()
+                decision["names"][key] = new_name
+                with self.assertRaisesRegex(ValueError, f"exact {key}"):
+                    validate_production("project", [], True, decision)
+                decision["confirmation"][key] = new_name
+                validate_production("project", [], True, decision)
 
     def test_boolean_score_is_rejected(self):
         decision = scored_decision()
