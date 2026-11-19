@@ -35,14 +35,5 @@ jobs:
       - name: Test the creative direction gate
         run: python3 -m unittest discover -s brand-identity -p 'test_verify.py' -v
 
-      - name: Verify the kit in an existing Git repository
-        run: |
-          consumer="$(mktemp -d)"
-          git init -q "$consumer"
-          printf '# Existing project instructions\n' > "$consumer/AGENTS.md"
-          printf '# Existing project README\n' > "$consumer/README.md"
-          cp -R brand-identity "$consumer/"
-          cd "$consumer"
-          python3 brand-identity/verify.py
-          printf '# Existing project instructions\n' | cmp - AGENTS.md
-          printf '# Existing project README\n' | cmp - README.md
+      - name: Exercise adoption in a separate Git repository
+        run: python3 .github/scripts/smoke_adoption.py

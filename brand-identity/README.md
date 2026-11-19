@@ -16,6 +16,8 @@ A workspace for a project's look, language, and public identity. The owner direc
 
 ## Working session
 
+In your copied kit, set `kind` to `"project"` in [the asset manifest](09-assets/manifest.json). Leave `assets` empty while you work on the brief and confirm the name. Run the commands below from your repository root.
+
 1. Record the product, audience, first placement, and the owner's taste in the [brief](01-strategy/brief.md).
 2. Complete the [creative direction workflow](01-strategy/creative-direction.md). Pick an initial logo category, pick an art style, screen categories for brand fit, write three distinct concept examples, rate them on the same criteria, and select one.
 3. Present the ranked examples and ask the owner whether the exact product name and wordmark text are locked for this project. Wait for an explicit answer. Record it in the [decision record](01-strategy/creative-decision.json). If either string changes, reconfirm both together.
