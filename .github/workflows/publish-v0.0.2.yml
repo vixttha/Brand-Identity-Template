@@ -1,0 +1,80 @@
+name: Publish approved v0.0.2 release
+
+on:
+  push:
+    branches: [release/v0.0.2]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.repository == 'vixttha/Brand-Identity-Template' && github.ref == 'refs/heads/release/v0.0.2' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Publish and verify the approved tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from urllib.error import HTTPError
+          from urllib.request import Request, urlopen
+          
+          repo = "vixttha/Brand-Identity-Template"
+          target = "87d0f9aedbe69ca4b16815d6b3329efcf5889da9"
+          tag_name = "v0.0.2"
+          api = f"https://api.github.com/repos/{repo}"
+          headers = {
+              "Accept": "application/vnd.github+json",
+              "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+              "Content-Type": "application/json",
+          }
+          
+          def api_call(path, data=None, allow_missing=False):
+              body = json.dumps(data).encode() if data is not None else None
+              request = Request(api + path, data=body, headers=headers)
+              try:
+                  with urlopen(request, timeout=25) as response:
+                      return json.load(response)
+              except HTTPError as error:
+                  if error.code == 404 and allow_missing:
+                      return None
+                  print(f"GitHub API returned {error.code} for {path}.")
+                  raise
+          
+          if api_call("/git/ref/heads/main")["object"]["sha"] != target:
+              raise SystemExit("main moved after approval. The release target needs a fresh check.")
+          
+          tag_path = f"/git/ref/tags/{tag_name}"
+          release_path = f"/releases/tags/{tag_name}"
+          tag = api_call(tag_path, allow_missing=True)
+          if tag and (tag["object"]["type"], tag["object"]["sha"]) != ("commit", target):
+              raise SystemExit("The existing tag points to a different object.")
+          
+          release = api_call(release_path, allow_missing=True)
+          if release is None:
+              release = api_call("/releases", {
+                  "tag_name": tag_name,
+                  "target_commitish": target,
+                  "name": "Brand Identity Template v0.0.2",
+                  "body": "## Brand Identity Template v0.0.2\n\nThe first GitHub release packages the standalone Brand Identity Template from commit `87d0f9a`. It preserves the ten checkpoints from [PR #12](https://github.com/vixttha/Brand-Identity-Template/pull/12).\n\n- Define a product name, slogan, logo, wordmark, and visual identity in an existing repository.\n- Confirm the creative direction before making artwork. Track PNG assets from first draft through final handoff.\n- Verify the asset inventory, PNG integrity, and required license with Python 3.10 or newer using the standard library.\n\nDownload **Source code (zip)** below and copy the `brand-identity/` directory into your project. Follow the [kit README](https://github.com/vixttha/Brand-Identity-Template/blob/v0.0.2/brand-identity/README.md) to initialize it. The release retains the existing v0.0.1 manifest format for project compatibility.\n\n[Public runner check for the released commit](https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408) · [Ten-checkpoint replay on Ubuntu and Windows](https://github.com/vixttha/Brand-Identity-Template/actions/runs/44491308192)",
+                  "draft": False,
+                  "prerelease": False,
+                  "make_latest": "true",
+              })
+          
+          tag = api_call(tag_path)
+          if (tag["object"]["type"], tag["object"]["sha"]) != ("commit", target):
+              raise SystemExit("The published tag did not resolve to the approved commit.")
+          if release["draft"] or release["prerelease"] or not release["published_at"]:
+              raise SystemExit("The release is not published as a regular release.")
+          
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write(f"[{tag_name}]({release['html_url']}) points to `{target}`.\n")
+          print(release["html_url"])
+          PY
