@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000008",
+  "title": "Standardize four transparent export variants per brand asset",
+  "summary": "Plan four transparent PNGs and four transparent SVGs for each approved logo, wordmark, and logo-plus-wordmark lockup. The proposed treatments are full color for light surfaces, full color for dark surfaces, solid black, and solid white. Count each approved standalone symbol or lockup independently.",
+  "kind": "feature",
+  "origin": {
+    "created_by": "human",
+    "source": "Project owner requested four PNG and four SVG variants for logo, wordmark, and combined artwork."
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "high",
+  "complexity": "medium",
+  "categories": [
+    "assets",
+    "web",
+    "handoff"
+  ],
+  "benefits": [
+    "Gives adopters a predictable set of transparent exports for website themes and one-ink placements.",
+    "Keeps the same brand artwork recognizable across format and background changes."
+  ],
+  "risks": [
+    "Color changes and raster scaling can alter contrast, spacing, or small-size legibility.",
+    "A new lockup or simplified icon adds its own export set and needs separate owner review."
+  ],
+  "related_ideas": [
+    "IDEA-000003",
+    "IDEA-000004"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The released kit defines PNG inventory and export guidance. The proposed matrix adds a vector counterpart and a predictable set of treatments.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/09-assets/README.md"
+    },
+    {
+      "relation": "context",
+      "claim": "The released review workflow asks for small-size checks, one-color silhouette, light and dark placement, and the combined lockup.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/README.md"
+    }
+  ]
+}
