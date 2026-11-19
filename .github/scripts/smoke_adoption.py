@@ -77,7 +77,9 @@ def run():
         subprocess.run([*command, "--ready-for-handoff"], cwd=consumer, check=True)
         assert (consumer / "AGENTS.md").read_bytes() == instructions
         assert (consumer / "README.md").read_bytes() == readme
-        assert (kit / "LICENSE").is_file()
+        (kit / "LICENSE").unlink()
+        missing_license = subprocess.run(command, cwd=consumer, capture_output=True, text=True)
+        assert missing_license.returncode and "Missing regular brand identity LICENSE file" in missing_license.stderr
 
 
 if __name__ == "__main__":

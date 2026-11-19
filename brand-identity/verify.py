@@ -28,6 +28,14 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def check_license():
+    license_file = KIT / "LICENSE"
+    require(license_file.is_file() and not license_file.is_symlink(),
+            "Missing regular brand identity LICENSE file")
+    require(bool(license_file.read_text(encoding="utf-8").strip()),
+            "Brand identity LICENSE file is empty")
+
+
 def check_docs():
     for relative in REQUIRED_DOCS:
         source = KIT / relative
@@ -151,6 +159,7 @@ def main():
     parser.add_argument("--ready-for-handoff", action="store_true",
                         help="require a project inventory with both logo and wordmark PNGs")
     args = parser.parse_args()
+    check_license()
     check_docs()
     inventory = json.loads((ASSETS / "manifest.json").read_text(encoding="utf-8"))
     require(inventory["kit_version"] == "v0.0.1", "Unexpected kit version")
