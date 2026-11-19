@@ -17,6 +17,8 @@
 
 The total out of 100 is the sum of each score multiplied by its weight and divided by five. Select one concept with the highest total. Record the deciding criterion when totals tie. If feedback changes the lead, update the ratings or shortlist and explain the decision.
 
+Apply the [meaning method](meaning-method.md) to the logo shortlist and the three verbal and typographic shortlists. Each option needs three anchored readings before the name confirmation step.
+
 ## Name confirmation
 
 Present the shortlist, ratings and selected concept first. Then ask whether the exact product name and the exact text in the wordmark are locked. If the owner gives a correction, update the strings and get an explicit confirmation on the revised spelling and casing. A negative or ambiguous answer leaves the design pending. Record only a publishable decision reference in a public kit.

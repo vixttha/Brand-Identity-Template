@@ -3,7 +3,6 @@
 import hashlib
 import json
 from pathlib import Path
-import shutil
 import struct
 import subprocess
 import sys
@@ -31,8 +30,16 @@ def run():
         subprocess.run(["git", "init", "-q"], cwd=consumer, check=True)
         (consumer / "AGENTS.md").write_bytes(instructions)
         (consumer / "README.md").write_bytes(readme)
+        def git(*args):
+            subprocess.run(["git", *args], cwd=consumer, check=True)
+
+        git("add", "AGENTS.md", "README.md")
+        git("-c", "user.name=Template CI", "-c", "user.email=template-ci@example.invalid",
+            "commit", "-qm", "Create synthetic host project")
+        git("fetch", "--no-tags", str(SOURCE.parent), "HEAD")
+        git("switch", "-c", "brand-identity-work")
+        git("restore", "--source=FETCH_HEAD", "--staged", "--worktree", "--", "brand-identity/")
         kit = consumer / "brand-identity"
-        shutil.copytree(SOURCE, kit, ignore=shutil.ignore_patterns("__pycache__"))
         command = [sys.executable, "brand-identity/verify.py"]
         subprocess.run(command, cwd=consumer, check=True)
 
@@ -41,7 +48,15 @@ def run():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         manifest["kind"] = "project"
         write_record(manifest_path, manifest)
-        write_record(kit / "01-strategy" / "creative-decision.json", scored_decision())
+        decision_path = kit / "01-strategy" / "creative-decision.json"
+        complete = scored_decision()
+        draft = {**complete, "confirmation": None}
+        write_record(decision_path, draft)
+        subprocess.run([*command, "--check-shortlists"], cwd=consumer, check=True)
+        pending = subprocess.run([*command, "--ready-for-artwork"], cwd=consumer,
+                                 capture_output=True, text=True)
+        assert pending.returncode and "Owner name confirmation is required" in pending.stderr
+        write_record(decision_path, complete)
         subprocess.run([*command, "--ready-for-artwork"], cwd=consumer, check=True)
 
         # A transparent 1×1 test fixture exercises registration without production art.

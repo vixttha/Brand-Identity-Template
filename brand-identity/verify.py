@@ -14,7 +14,8 @@ DECISION = KIT / "01-strategy" / "creative-decision.json"
 WEIGHTS = {"brand_fit": 35, "artistic_character": 25,
            "distinctiveness": 25, "versatility": 15}
 REQUIRED_DOCS = (
-    "README.md", "01-strategy/brief.md", "01-strategy/creative-direction.md",
+    "README.md", "AGENTS.md", "01-strategy/brief.md", "01-strategy/creative-direction.md",
+    "01-strategy/meaning-method.md",
     "02-naming/naming.md",
     "03-messaging/voice.md", "04-logo/logo.md", "05-wordmark/wordmark.md",
     "06-visual-system/system.md", "07-applications/applications.md",
@@ -64,6 +65,66 @@ def check_png(asset):
 
 def require_text(value, label):
     require(isinstance(value, str) and bool(value.strip()), f"Missing {label}")
+
+
+def check_meanings(option, label):
+    meanings = option.get("meanings")
+    require(isinstance(meanings, list) and len(meanings) >= 3,
+            f"{label}: record at least three meanings")
+    required_layers = {"product", "audience", "principle"}
+    layers = set()
+    readings = set()
+    for reading in meanings:
+        require(isinstance(reading, dict), f"{label}: each meaning must be a record")
+        layer = reading.get("layer")
+        require(isinstance(layer, str) and layer in required_layers,
+                f"{label}: invalid meaning layer")
+        for key in ("detail", "meaning", "anchor"):
+            require_text(reading.get(key), f"{label} meaning {key}")
+        normalized = " ".join(reading["meaning"].casefold().split())
+        require(normalized not in readings, f"{label}: meanings must be distinct")
+        readings.add(normalized)
+        layers.add(layer)
+    require(layers == required_layers, f"{label}: cover product, audience, and principle")
+
+
+def check_shortlist(options, label, minimum, distinct_field):
+    require(isinstance(options, list) and len(options) >= minimum,
+            f"{label}: record at least {minimum} options")
+    seen_ids = set()
+    seen_values = set()
+    for option in options:
+        require(isinstance(option, dict), f"{label}: each option must be a record")
+        identity = option.get("id")
+        require_text(identity, f"{label} option ID")
+        require(identity not in seen_ids, f"{label}: duplicate option ID {identity}")
+        seen_ids.add(identity)
+        value = option.get(distinct_field)
+        require_text(value, f"{label} {identity} {distinct_field}")
+        normalized = " ".join(value.casefold().split())
+        require(normalized not in seen_values, f"{label}: options must be distinct")
+        seen_values.add(normalized)
+        check_meanings(option, f"{label} {identity}")
+
+
+def check_meaning_shortlists(decision):
+    locked_name = decision.get("existing_name_lock")
+    if locked_name is not None:
+        require_text(locked_name, "existing product-name decision reference")
+    names = decision.get("names", {})
+    require(isinstance(names, dict), "Record proposed product and wordmark names")
+    options = decision.get("name_options")
+    check_shortlist(options, "Project names", 1 if locked_name else 2, "text")
+    check_shortlist(decision.get("concepts"), "Logos", 3, "example")
+    check_shortlist(decision.get("slogan_options"), "Slogans", 2, "text")
+    wordmarks = decision.get("wordmark_options")
+    check_shortlist(wordmarks, "Wordmarks", 2, "treatment")
+    for option in wordmarks:
+        require_text(option.get("text"), "exact wordmark option text")
+    require(any(option["text"] == names.get("product") for option in options),
+            "Include the exact proposed product name in the name shortlist")
+    require(any(option["text"] == names.get("wordmark") for option in wordmarks),
+            "Include the exact proposed wordmark text in the wordmark shortlist")
 
 
 def check_artwork_gate(decision):
@@ -117,6 +178,7 @@ def check_artwork_gate(decision):
         require_text(names.get(key), f"proposed {key} name")
         require(names[key] == confirmation.get(key), f"Confirm the exact {key} name before artwork")
     require_text(confirmation.get("reference"), "owner confirmation reference")
+    check_meaning_shortlists(decision)
 
 
 def validate_production(kind, assets, ready_for_artwork, decision):
@@ -130,6 +192,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ready-for-artwork", action="store_true",
                         help="require a scored direction and explicit owner name confirmation")
+    parser.add_argument("--check-shortlists", action="store_true",
+                        help="check the written options before requesting confirmation")
     args = parser.parse_args()
     check_docs()
     inventory = json.loads((ASSETS / "manifest.json").read_text(encoding="utf-8"))
@@ -142,6 +206,9 @@ def main():
     require(names == {path.name for path in ASSETS.glob("*.png")}, "PNG directory and manifest differ")
     decision = json.loads(DECISION.read_text(encoding="utf-8"))
     require(isinstance(decision, dict), "The creative decision must be a record")
+    if args.check_shortlists:
+        check_meaning_shortlists(decision)
+        print("Four shortlists with distinct anchored meanings verified")
     validate_production(kind, assets, args.ready_for_artwork, decision)
     if assets:
         require({"logo", "wordmark"} <= {asset["role"] for asset in assets},

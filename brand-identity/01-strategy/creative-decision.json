@@ -9,5 +9,9 @@
     "product": "",
     "wordmark": ""
   },
-  "confirmation": null
+  "confirmation": null,
+  "name_options": [],
+  "slogan_options": [],
+  "wordmark_options": [],
+  "existing_name_lock": null
 }

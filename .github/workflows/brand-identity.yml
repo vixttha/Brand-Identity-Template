@@ -2,7 +2,7 @@ name: Brand identity checks
 
 on:
   push:
-    branches: [main, Brand-Identity-template-v0.0.1, standalone-checkpoints-v0.0.1]
+    branches: [main, Brand-Identity-template-v0.0.1, standalone-checkpoints-v0.0.1, meaning-led-identity]
   workflow_dispatch:
   pull_request:
     branches: [main, Brand-Identity-template-v0.0.1]
