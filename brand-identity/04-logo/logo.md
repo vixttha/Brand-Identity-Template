@@ -1,7 +1,12 @@
-# Logo symbol
+# Facet logo
 
-Give the mark one recognizable idea grounded in the product. Record silhouette, minimum clear space, alignment, and where the symbol appears without the name. Compare visual directions using the same scale and background. Review the silhouette alone, then in its intended application.
+![The proposed BART Facet mark, two dark planes and a mint plane divided by a diagonal gap](../09-assets/bart-facet-logo-draft.png)
 
-Use @Images for the PNG asset. Record the source, intended surfaces, and rights notes in [assets](../09-assets/README.md). Check transparent edges, smallest intended size, dark and light surfaces, and one-color reproduction where applicable.
+The wedge is assembled around a single diagonal cut. The mint face brings attention to the shaped edge. The dark planes establish the silhouette.
 
-Align the mark with the [wordmark](../05-wordmark/wordmark.md) and [visual system](../06-visual-system/system.md).
+- Start with clear space of at least one quarter of visible mark height when placing the asset near other marks or text. Account for the embedded PNG padding.
+- Use a pale solid background for the first draft. Start review at 64 px and check 48, 32, 24, and 16 px before designating a minimum production size.
+- For a dark header, use a light backing or the text fallback while a reversed mark is under review.
+- Use a separately reviewed one-color silhouette for print and small icons that need a single ink.
+
+[Asset inventory](../09-assets/manifest.json) · [Wordmark pairing](../05-wordmark/wordmark.md)

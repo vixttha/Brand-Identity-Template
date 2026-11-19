@@ -1,5 +1,31 @@
 {
   "kit_version": "v0.0.1",
-  "kind": "template",
-  "assets": []
+  "kind": "project",
+  "name": "BART",
+  "assets": [
+    {
+      "file": "bart-facet-logo-draft.png",
+      "role": "logo",
+      "alt": "An angular dark mesh wedge with a mint triangular plane and a diagonal gap",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true,
+      "sha256": "e339065d469eb730de412d24dc5a4beb8c29f7834168f8b3320ea562be8f5a1a",
+      "generated_with": "@Images",
+      "source": "Generated image, original PNG export. See asset README for brief.",
+      "status": "draft"
+    },
+    {
+      "file": "bart-wordmark-draft.png",
+      "role": "wordmark",
+      "alt": "BART in widely spaced, dark geometric capitals",
+      "width": 2172,
+      "height": 724,
+      "alpha": true,
+      "sha256": "bd903ac27203f133eaf59a0ee58436005bbbb88ac5607f7030ff71100077ef01",
+      "generated_with": "@Images",
+      "source": "Selected wide-tracked generation, original PNG export. See asset README for brief.",
+      "status": "draft"
+    }
+  ]
 }

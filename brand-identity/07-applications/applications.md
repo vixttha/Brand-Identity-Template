@@ -1,7 +1,15 @@
 # Applications
 
-List the first surface and the intended asset role, size, crop, color treatment, accessible name, pairing with text, and fallback. Start with the surface the owner will actually use. Useful follow-ons include repository avatars, documentation, app headers, favicons, social cards, and presentation covers.
+| Surface | Proposed treatment | Review target |
+| --- | --- | --- |
+| GitHub README | Logo and full product name in live text, with the descriptor nearby | Desktop/mobile and both GitHub themes |
+| Repository avatar | Center the Facet mark on a light solid background | Circle crop, 32 and 64 px |
+| Docs header | Ink wordmark on Mist, or the live-text name on Ink | Narrow navigation, image loading fallback, reading order |
+| Favicon | Compact single-color version once reviewed | 16 and 32 px browser tab rendering |
+| Social card | Logo lockup, project name, and plain descriptor | Cropped preview and legibility at phone width |
 
-Mock up the real placement using @Images if a visual preview is needed. Verify the actual placement at narrow width and both themes. Supply practical export names for downstream adoption.
+If adjacent text already names the product or agent, use a decorative empty alt value for the duplicate image. If the image alone links home, give the link an accessible name. Keep the slogan in live text.
 
-See [review](../08-review/review.md) before replacing live assets.
+Retain the current README header and avatar as the rollback references when a rollout is approved. Record the reviewed file digest, display test, target surface, and existing asset in the rollout entry.
+
+[Visual review](../08-review/review.md)
