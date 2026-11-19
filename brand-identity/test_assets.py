@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 import zlib
 
-from verify import check_png
+from verify import check_inventory, check_png
 
 
 def chunk(kind, data):
@@ -47,3 +47,21 @@ class PngTests(unittest.TestCase):
         bad_crc = payload[:-13] + bytes([payload[-13] ^ 1]) + payload[-12:]
         with self.assertRaisesRegex(ValueError, "CRC"):
             self.verify_payload(bad_crc)
+
+
+class InventoryTests(unittest.TestCase):
+    def test_finds_unsupported_export_paths(self):
+        for filename in ("extra.PNG", "drafts/extra.png"):
+            with self.subTest(filename=filename), TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                asset = directory / filename
+                asset.parent.mkdir(parents=True, exist_ok=True)
+                asset.touch()
+                with patch("verify.ASSETS", directory), self.assertRaisesRegex(ValueError, "export"):
+                    check_inventory([])
+
+    def test_finds_unregistered_png_at_asset_root(self):
+        with TemporaryDirectory() as temporary, patch("verify.ASSETS", Path(temporary)):
+            (Path(temporary) / "extra.png").touch()
+            with self.assertRaisesRegex(ValueError, "unregistered.*extra.png"):
+                check_inventory([])

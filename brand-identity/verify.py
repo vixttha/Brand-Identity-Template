@@ -42,6 +42,23 @@ def check_docs():
                     f"{relative}: missing or external local path {target.path}")
 
 
+def check_inventory(assets):
+    names = {asset["file"] for asset in assets}
+    require(len(names) == len(assets), "Duplicate manifest filename")
+    discovered = set()
+    for path in ASSETS.rglob("*"):
+        if path.is_dir() or not path.name.lower().endswith(".png"):
+            continue
+        relative = path.relative_to(ASSETS)
+        require(path.parent == ASSETS and path.name.endswith(".png"),
+                f"PNG exports must use lowercase .png in the asset directory: {relative}")
+        discovered.add(path.name)
+    unexpected = sorted(discovered - names)
+    missing = sorted(names - discovered)
+    require(not (unexpected or missing),
+            f"PNG directory and manifest differ (unregistered: {unexpected}, missing: {missing})")
+
+
 def check_png(asset):
     name = asset["file"]
     require(name == Path(name).name and name.endswith(".png"), f"Invalid asset path: {name}")
@@ -140,9 +157,7 @@ def main():
     kind = inventory["kind"]
     require(kind in {"template", "project"}, f"Invalid kit kind: {kind}")
     assets = inventory["assets"]
-    names = {asset["file"] for asset in assets}
-    require(len(names) == len(assets), "Duplicate manifest filename")
-    require(names == {path.name for path in ASSETS.glob("*.png")}, "PNG directory and manifest differ")
+    check_inventory(assets)
     decision = json.loads(DECISION.read_text(encoding="utf-8"))
     require(isinstance(decision, dict), "The creative decision must be a record")
     validate_production(kind, assets, args.ready_for_artwork, decision)
