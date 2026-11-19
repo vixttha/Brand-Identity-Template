@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000003",
+  "title": "Document cross-surface identity acceptance",
+  "summary": "Define review evidence for wordmark legibility, monochrome use, minimum size, and light and dark application surfaces.",
+  "kind": "process",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Public Brand Identity Template source and release review"
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "medium",
+  "complexity": "medium",
+  "categories": [
+    "accessibility",
+    "handoff"
+  ],
+  "benefits": [
+    "Makes design acceptance easier to reproduce during handoff."
+  ],
+  "risks": [
+    "One fixed target size would fit only some products and surfaces."
+  ],
+  "related_ideas": [
+    "IDEA-000004"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The kit provides a review record for the identity and its rollout.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/08-review/review.md"
+    }
+  ]
+}

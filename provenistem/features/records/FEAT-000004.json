@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000004",
+  "title": "Incremental drafts and handoff",
+  "summary": "Project drafts can register one asset at a time. Final handoff requires both logo and wordmark exports.",
+  "kind": "workflow",
+  "lifecycle_status": "verified",
+  "implementation_status": "implemented",
+  "idea_ids": [
+    "IDEA-000003"
+  ],
+  "acceptance_criteria": [
+    "A first PNG can pass the normal inventory check after artwork readiness is satisfied.",
+    "The explicit handoff check requires both required roles."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/verify.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/pull/12"
+    },
+    {
+      "kind": "test",
+      "claim": "The adopter run registered drafts incrementally and exercised rejection of an incomplete handoff.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": ".github/scripts/smoke_adoption.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}

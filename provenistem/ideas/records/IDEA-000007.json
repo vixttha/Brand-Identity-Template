@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000007",
+  "title": "Validate the kit with an unrelated adopter",
+  "summary": "Try the released ZIP in a project outside the template repository and record where the onboarding instructions or deliverable checks need clarification.",
+  "kind": "research",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Public Brand Identity Template source and release review"
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "high",
+  "complexity": "medium",
+  "categories": [
+    "adoption",
+    "verification"
+  ],
+  "benefits": [
+    "Separates real-world adoption feedback from the existing synthetic walkthrough."
+  ],
+  "risks": [
+    "One adopter cannot establish compatibility for every project."
+  ],
+  "related_ideas": [
+    "IDEA-000002",
+    "IDEA-000005"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The released smoke test covers a disposable repository and synthetic PNG assets.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": ".github/scripts/smoke_adoption.py"
+    }
+  ]
+}

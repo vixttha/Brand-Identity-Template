@@ -1,0 +1,70 @@
+name: Verify Provenistem project records
+
+on:
+  push:
+    branches: [provenistem]
+
+permissions:
+  contents: read
+
+jobs:
+  records:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify record links and evidence paths
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import subprocess
+
+          root = Path("provenistem")
+          records = {}
+          for section, prefix in (("ideas", "IDEA"), ("features", "FEAT")):
+              folder = root / section
+              index = (folder / "INDEX.md").read_text(encoding="utf-8")
+              rows = {}
+              for path in sorted((folder / "records").glob("*.json")):
+                  row = json.loads(path.read_text(encoding="utf-8"))
+                  assert row["schema_version"] == 1
+                  assert row["id"] == path.stem and re.fullmatch(prefix + r"-[0-9]{6}", path.stem)
+                  expected = (
+                      f"| [{path.stem}](records/{path.name}) | {row['title']} | "
+                      f"{row['lifecycle_status']} | {row['implementation_status']} | {row['testing']['status']} |"
+                  )
+                  assert expected in index.splitlines(), f"Stale index for {path}"
+                  rows[path.stem] = row
+              assert len(rows) == sum(line.startswith("| [" + prefix + "-") for line in index.splitlines())
+              records[section] = rows
+
+          for section, rows in records.items():
+              for key, row in rows.items():
+                  related = row["related_ideas"] if section == "ideas" else row["idea_ids"]
+                  assert key not in related
+                  assert set(related) <= records["ideas"].keys(), f"Unresolved idea reference in {key}"
+                  if section == "features":
+                      assert row["release_membership"] == "NOT_ASSERTED"
+                  for item in row["evidence"]:
+                      sha = item["commit"] if section == "ideas" else item["source_sha"]
+                      path = item["path"] if section == "ideas" else item["source_path"]
+                      assert re.fullmatch(r"[0-9a-f]{40}", sha)
+                      subprocess.run(["git", "cat-file", "-e", f"{sha}:{path}"], check=True)
+
+          summary = f"Verified {len(records['ideas'])} idea records and {len(records['features'])} feature records."
+          print(summary)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as report:
+              report.write(summary + "\n")
+          PY
+
+      - name: Verify the released kit on the new branch
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s brand-identity -p 'test_*.py'
+          PYTHONDONTWRITEBYTECODE=1 python3 .github/scripts/smoke_adoption.py

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000004",
+  "title": "Explore optional vector delivery",
+  "summary": "Evaluate an optional editable vector source alongside the validated PNG exports for print and scaling.",
+  "kind": "research",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Public Brand Identity Template source and release review"
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "medium",
+  "complexity": "medium",
+  "categories": [
+    "assets",
+    "handoff"
+  ],
+  "benefits": [
+    "Supports larger surfaces and editable handoffs where the source format matters."
+  ],
+  "risks": [
+    "Adds source licensing, format parity, and validation work."
+  ],
+  "related_ideas": [
+    "IDEA-000003"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The released asset contract covers PNG exports.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/09-assets/README.md"
+    }
+  ]
+}

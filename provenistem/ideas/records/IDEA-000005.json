@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000005",
+  "title": "Design a no-clobber adopter update path",
+  "summary": "Document an upgrade preview that identifies changed upstream files and preserves the adopter's names, creative decisions, and assets.",
+  "kind": "process",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Public Brand Identity Template source and release review"
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "medium",
+  "complexity": "medium",
+  "categories": [
+    "adoption",
+    "compatibility"
+  ],
+  "benefits": [
+    "Makes it easier to adopt later improvements after branding work has started."
+  ],
+  "risks": [
+    "An automated overwrite could discard owner decisions or work in progress."
+  ],
+  "related_ideas": [
+    "IDEA-000007"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "Current onboarding asks users to review an existing kit directory before copying.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "README.md"
+    }
+  ]
+}

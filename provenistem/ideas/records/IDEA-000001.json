@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000001",
+  "title": "Reconcile the meaning-led branch with the released verifier",
+  "summary": "Carry the four evidence-backed shortlists into a future candidate from the released kit and retain its asset, handoff, and license checks.",
+  "kind": "architecture",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Public Brand Identity Template source and release review"
+  },
+  "lifecycle_status": "triaged",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "high",
+  "complexity": "medium",
+  "categories": [
+    "creative-direction",
+    "integration"
+  ],
+  "benefits": [
+    "Keeps deeper concept work compatible with the current adopter workflow."
+  ],
+  "risks": [
+    "A direct merge from the older base could undo newer verification behavior."
+  ],
+  "related_ideas": [
+    "IDEA-000002",
+    "IDEA-000006"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The separate branch contains the four-shortlist method.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "99a897ab9dd927fa82c22ed3b20ac355d1f84d3a",
+      "path": "brand-identity/01-strategy/meaning-method.md"
+    },
+    {
+      "relation": "context",
+      "claim": "The released verifier includes readiness and handoff checks.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/verify.py"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000001",
+  "title": "Portable brand identity kit",
+  "summary": "A complete kit can be copied into an existing repository and initialized as a project without additional Python packages.",
+  "kind": "capability",
+  "lifecycle_status": "verified",
+  "implementation_status": "implemented",
+  "idea_ids": [
+    "IDEA-000002",
+    "IDEA-000005",
+    "IDEA-000007"
+  ],
+  "acceptance_criteria": [
+    "The copy includes the kit README, license, verifier, and phase documents.",
+    "The verifier accepts a clean copied kit and a project manifest."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/README.md",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/pull/12"
+    },
+    {
+      "kind": "test",
+      "claim": "The post-merge adopter check validated an isolated synthetic repository.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": ".github/scripts/smoke_adoption.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}

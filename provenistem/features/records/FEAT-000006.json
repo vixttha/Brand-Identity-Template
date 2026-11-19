@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000006",
+  "title": "Public CI with merge provenance",
+  "summary": "The project runs checks on public GitHub-hosted runners and records the tested commit and both parents for combined PR verification.",
+  "kind": "integration",
+  "lifecycle_status": "verified",
+  "implementation_status": "implemented",
+  "idea_ids": [],
+  "acceptance_criteria": [
+    "PR validation checks out the combined commit and records base and head parents.",
+    "Post-merge verification runs for the integrated main commit."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499341544",
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408",
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44491308192"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": ".github/workflows/brand-identity.yml",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/pull/12"
+    },
+    {
+      "kind": "test",
+      "claim": "PR #12's combined check and the exact merged main check succeeded.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": ".github/workflows/brand-identity.yml",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}

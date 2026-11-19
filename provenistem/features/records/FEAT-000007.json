@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000007",
+  "title": "Meaning-led option shortlists",
+  "summary": "The separate meaning-led branch adds options for names, logos, slogans, and wordmarks using project-specific sources and meaning layers.",
+  "kind": "workflow",
+  "lifecycle_status": "implemented",
+  "implementation_status": "implemented",
+  "idea_ids": [
+    "IDEA-000001",
+    "IDEA-000002",
+    "IDEA-000006"
+  ],
+  "acceptance_criteria": [
+    "The candidate describes four independent shortlists and three supported meanings per option.",
+    "Branch evidence stays attached to its own checkout."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44490652130"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "99a897ab9dd927fa82c22ed3b20ac355d1f84d3a",
+      "source_path": "brand-identity/01-strategy/meaning-method.md",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/tree/99a897ab9dd927fa82c22ed3b20ac355d1f84d3a"
+    },
+    {
+      "kind": "test",
+      "claim": "The meaning-led branch's public workflow passed at its recorded head.",
+      "source_sha": "99a897ab9dd927fa82c22ed3b20ac355d1f84d3a",
+      "source_path": "brand-identity/test_verify.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44490652130"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}

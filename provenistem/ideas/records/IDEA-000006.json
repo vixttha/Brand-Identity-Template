@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000006",
+  "title": "Define a business brand review checklist",
+  "summary": "Translate the requested modern business standards into a review checklist for claims, distinctiveness, accessible use, asset rights, and distribution.",
+  "kind": "process",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Owner requested a list of modern business standards for the brand identity work"
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "medium",
+  "complexity": "medium",
+  "categories": [
+    "review",
+    "brand-standards"
+  ],
+  "benefits": [
+    "Gives teams one place to record evidence for practical brand use."
+  ],
+  "risks": [
+    "A checklist could be misread as a certification without reviewing the underlying evidence."
+  ],
+  "related_ideas": [
+    "IDEA-000003"
+  ],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The release provides a starting surface for recorded review decisions.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/08-review/review.md"
+    }
+  ]
+}

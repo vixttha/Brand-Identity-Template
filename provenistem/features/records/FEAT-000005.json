@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000005",
+  "title": "Adopter license verification",
+  "summary": "The verifier requires a regular, nonempty license file in the copied kit.",
+  "kind": "capability",
+  "lifecycle_status": "verified",
+  "implementation_status": "implemented",
+  "idea_ids": [
+    "IDEA-000005"
+  ],
+  "acceptance_criteria": [
+    "A complete copied kit passes.",
+    "Removing the license from the copied kit produces a verification failure."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/verify.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/pull/12"
+    },
+    {
+      "kind": "test",
+      "claim": "The adopter smoke test includes a missing-license check.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": ".github/scripts/smoke_adoption.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}

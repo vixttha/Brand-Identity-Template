@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "IDEA-000002",
+  "title": "Publish a neutral worked example",
+  "summary": "Create a fictional project example that traces product facts to name, mark, slogan, and wordmark options and an export review.",
+  "kind": "product",
+  "origin": {
+    "created_by": "assistant",
+    "source": "Public Brand Identity Template source and release review"
+  },
+  "lifecycle_status": "captured",
+  "implementation_status": "not_planned",
+  "testing": {
+    "status": "untested"
+  },
+  "importance": "high",
+  "complexity": "medium",
+  "categories": [
+    "onboarding",
+    "examples"
+  ],
+  "benefits": [
+    "Shows how good reasoning and finished records fit together."
+  ],
+  "risks": [
+    "Adopters could copy example decisions into their own canonical data."
+  ],
+  "related_ideas": [],
+  "evidence": [
+    {
+      "relation": "context",
+      "claim": "The release describes the workflow and ships a blank project kit.",
+      "repository": "vixttha/Brand-Identity-Template",
+      "commit": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "path": "brand-identity/README.md"
+    }
+  ]
+}

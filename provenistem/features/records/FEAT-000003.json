@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000003",
+  "title": "PNG integrity and inventory validation",
+  "summary": "The dependency-free verifier checks registered PNG contents and finds unsupported or unregistered files.",
+  "kind": "capability",
+  "lifecycle_status": "verified",
+  "implementation_status": "implemented",
+  "idea_ids": [
+    "IDEA-000004"
+  ],
+  "acceptance_criteria": [
+    "Reject bad PNG CRC, compressed data, and scanline data even when a manifest hash matches.",
+    "Detect uppercase PNG names, nested PNGs, and unregistered root exports."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/png_integrity.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/pull/12"
+    },
+    {
+      "kind": "test",
+      "claim": "The public suite ran PNG integrity and inventory regression cases.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/test_assets.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}

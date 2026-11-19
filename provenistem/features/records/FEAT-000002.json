@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "FEAT-000002",
+  "title": "Creative direction and confirmed names",
+  "summary": "A verified decision records scored creative options and the owner-confirmed exact project name and wordmark before artwork.",
+  "kind": "workflow",
+  "lifecycle_status": "verified",
+  "implementation_status": "implemented",
+  "idea_ids": [
+    "IDEA-000001"
+  ],
+  "acceptance_criteria": [
+    "Artwork readiness rejects missing confirmation and changed name or wordmark text.",
+    "The readiness gate requires one selected concept with scored alternatives."
+  ],
+  "testing": {
+    "status": "tested",
+    "outcome": "pass",
+    "refs": [
+      "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    ]
+  },
+  "evidence": [
+    {
+      "kind": "implementation",
+      "claim": "Source at the recorded revision implements the described capability.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/01-strategy/creative-direction.md",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/pull/12"
+    },
+    {
+      "kind": "test",
+      "claim": "The public suite exercised missing fields, scores, and confirmation for both exact strings.",
+      "source_sha": "87d0f9aedbe69ca4b16815d6b3329efcf5889da9",
+      "source_path": "brand-identity/test_verify.py",
+      "receipt": "https://github.com/vixttha/Brand-Identity-Template/actions/runs/44499438408"
+    }
+  ],
+  "release_membership": "NOT_ASSERTED"
+}
