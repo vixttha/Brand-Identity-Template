@@ -33,3 +33,5 @@ The browser script uses a temporary copy of the kit. The verifier validates each
 ## Handoff and evidence-link regressions
 
 Ordinary regression tests cover draft-only, test-only and mixed-status handoffs ([issue #13](https://github.com/vixttha/Brand-Identity-Template/issues/13)) and existing adopter-local evidence links ([issue #14](https://github.com/vixttha/Brand-Identity-Template/issues/14)).
+
+The Chromium job uploads `brand-browser-receipts-attempt-*` after verifying the copied bundle. It contains the exact case plan, the synthetic PNG inventory manifest, and the Python and Chromium receipts. Download it and replay `python3 test-vault/verify_receipts.py --case <bundle>/case.json --receipts <bundle>/receipts --evidence <bundle>/manifest.json --run-id <run> --attempt <attempt>` from the exact tested checkout.

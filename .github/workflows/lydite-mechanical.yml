@@ -114,3 +114,12 @@ jobs:
         run: node --test test-vault/browser/verify-results.unit.cjs
       - name: Verify and render the shared PNG inventory
         run: bash test-vault/tests/browser.sh
+        env:
+          LYDITE_BROWSER_EVIDENCE_DIR: ${{ runner.temp }}/brand-browser-evidence
+      - name: Upload verified synthetic browser receipts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: brand-browser-receipts-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/brand-browser-evidence/
+          if-no-files-found: error
+          retention-days: 30

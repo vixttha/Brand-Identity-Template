@@ -93,5 +93,16 @@ else
 fi
 record_receipt chromium "Node.js $(node --version)" "$browser_status"
 
+if [[ -n "${LYDITE_BROWSER_EVIDENCE_DIR:-}" ]]; then
+  bundle="$LYDITE_BROWSER_EVIDENCE_DIR"
+  mkdir -p "$bundle/receipts"
+  cp "$plan" "$bundle/case.json"
+  cp "$manifest" "$bundle/manifest.json"
+  cp "$receipt_dir/python-verifier.json" "$receipt_dir/chromium.json" "$bundle/receipts/"
+  plan="$bundle/case.json"
+  manifest="$bundle/manifest.json"
+  receipt_dir="$bundle/receipts"
+fi
+
 python3 test-vault/verify_receipts.py --case "$plan" \
   --receipts "$receipt_dir" --evidence "$manifest" --run-id "$run_id" --attempt "$attempt"
