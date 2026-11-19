@@ -3,10 +3,11 @@
 import argparse
 import hashlib
 import json
-import struct
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 import re
+
+from png_integrity import inspect_png
 
 KIT = Path(__file__).resolve().parent
 ASSETS = KIT / "09-assets"
@@ -47,13 +48,13 @@ def check_png(asset):
     file = ASSETS / name
     require(file.is_file() and not file.is_symlink(), f"Missing regular PNG: {name}")
     payload = file.read_bytes()
-    require(payload.startswith(b"\x89PNG\r\n\x1a\n\x00\x00\x00\x0dIHDR")
-            and len(payload) >= 45 and payload.endswith(b"IEND\xaeB\x60\x82"),
-            f"{name}: invalid PNG header or ending")
-    width, height, _, color_type = struct.unpack(">IIBB", payload[16:26])
-    require((width, height) == (asset["width"], asset["height"]) and min(width, height) > 0,
+    try:
+        width, height, has_alpha = inspect_png(payload)
+    except ValueError as error:
+        raise ValueError(f"{name}: {error}") from error
+    require((width, height) == (asset["width"], asset["height"]),
             f"{name}: unexpected dimensions {width}x{height}")
-    require(isinstance(asset["alpha"], bool) and asset["alpha"] == (color_type in (4, 6)),
+    require(isinstance(asset["alpha"], bool) and asset["alpha"] == has_alpha,
             f"{name}: unexpected PNG alpha channel metadata")
     require(hashlib.sha256(payload).hexdigest() == asset["sha256"], f"{name}: wrong SHA-256")
     require(asset["generated_with"] == "@Images", f"{name}: must record @Images generation")
