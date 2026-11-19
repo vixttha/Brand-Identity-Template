@@ -80,7 +80,10 @@ jobs:
       - name: Exercise stale and mismatched Git checkouts
         shell: bash
         run: bash test-vault/tests/test_checkout.sh
-      - name: Download and adopt both public ZIPs
+      - name: Test candidate archive acceptance and rejection
+        shell: bash
+        run: bash test-vault/tests/test_candidate_archive.sh
+      - name: Adopt the candidate and both public ZIPs
         shell: bash
         run: bash test-vault/tests/adopt_archive.sh
 
@@ -107,5 +110,7 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps --only-shell chromium
+      - name: Check Playwright receipt validation
+        run: node --test test-vault/browser/verify-results.unit.cjs
       - name: Verify and render the shared PNG inventory
         run: bash test-vault/tests/browser.sh

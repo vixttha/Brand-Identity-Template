@@ -62,6 +62,30 @@ class CatalogTests(VaultCLI):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("1 unique cases across 1 topics", result.stdout)
 
+    def test_orphaned_case_rows_fail_even_when_earlier_cases_are_valid(self):
+        extra = ROW.replace("PNG-001", "PNG-002")
+        for separator in ("\n", "\n<!-- interrupted table -->\n", "\n## Other section\n"):
+            with self.subTest(separator=separator):
+                self.catalog.write_text(HEADER + ROW + separator + extra, encoding="utf-8")
+                result = self.validate()
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertIn("PNG-002 is outside a Test Vault table", result.stderr)
+
+    def test_case_ids_in_an_unrelated_markdown_table_are_not_catalog_cases(self):
+        unrelated = ("| Reference | Purpose |\n| --- | --- |\n"
+                     "| PNG-002 | Example reference |\n")
+        self.catalog.write_text(HEADER + ROW + "\n" + unrelated, encoding="utf-8")
+        result = self.validate()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("1 unique cases across 1 topics", result.stdout)
+
+    def test_a_second_catalog_table_can_register_more_cases(self):
+        extra = ROW.replace("PNG-001", "PNG-002")
+        self.catalog.write_text(HEADER + ROW + "\n" + HEADER + extra, encoding="utf-8")
+        result = self.validate()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("2 unique cases across 1 topics", result.stdout)
+
     def test_bad_catalog_structure_fails(self):
         for catalog, reason in (
             (HEADER, "no cases found"),

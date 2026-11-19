@@ -5,9 +5,12 @@ cd "$(git rev-parse --show-toplevel)"
 export PYTHONDONTWRITEBYTECODE=1
 
 plan=test-vault/tests/png-browser-case.json
+browser=test-vault/browser
+required="$browser/required-tests.json"
+verify_results="$browser/verify-results.cjs"
 checkout=$(python3 test-vault/source_commit.py "$plan" test-vault/cases.md \
   test-vault/tests/browser.sh test-vault/tests/png_fixtures.py \
-  brand-identity/verify.py test-vault/browser/png.spec.cjs)
+  brand-identity/verify.py "$browser/png.spec.cjs" "$required" "$verify_results")
 
 workspace=$(mktemp -d)
 trap 'rm -rf -- "$workspace"' EXIT
@@ -81,7 +84,9 @@ else
 fi
 record_receipt python-verifier "$(python3 --version)" "$python_status"
 
-if npm --prefix test-vault/browser test; then
+report="$workspace/playwright.json"
+if PLAYWRIGHT_JSON_OUTPUT_FILE="$report" npm --prefix "$browser" test -- --reporter=list,json &&
+   node "$verify_results" "$required" "$report"; then
   browser_status=pass
 else
   browser_status=fail

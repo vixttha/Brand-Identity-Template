@@ -29,6 +29,8 @@ def read_cases(path):
     cases = set()
     topics = set()
     in_table = False
+    other_table = False
+    other_header_width = 0
     pending_divider = None
     fence = None
     comment = False
@@ -58,14 +60,23 @@ def read_cases(path):
         if starts_comment:
             comment = "-->" not in line
         if not cells:
-            in_table = False
+            in_table = other_table = False
+            other_header_width = 0
             continue
         if cells == HEADER:
             pending_divider = number
             continue
+        match = CASE_ID.fullmatch(cells[0])
         if not in_table:
+            if other_table:
+                continue
+            if len(cells) == other_header_width and all(SEPARATOR.fullmatch(cell) for cell in cells):
+                other_table = True
+            elif match:
+                raise ValueError(f"{path}:{number}: case {match.group()} is outside a Test Vault table")
+            else:
+                other_header_width = len(cells)
             continue
-        match = CASE_ID.fullmatch(cells[0]) if cells else None
         if len(cells) != len(HEADER) or not all(cells) or not match or cells[2] not in PRIORITIES:
             raise ValueError(f"{path}:{number}: invalid case row")
         case_id = match.group()

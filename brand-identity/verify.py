@@ -77,7 +77,10 @@ def check_png(asset):
         width, height, has_alpha = inspect_png(payload)
     except ValueError as error:
         raise ValueError(f"{name}: {error}") from error
-    require((width, height) == (asset["width"], asset["height"]),
+    manifest_width, manifest_height = asset.get("width"), asset.get("height")
+    require(type(manifest_width) is int and type(manifest_height) is int,
+            f"{name}: PNG dimensions must be integers")
+    require((width, height) == (manifest_width, manifest_height),
             f"{name}: unexpected dimensions {width}x{height}")
     require(isinstance(asset["alpha"], bool) and asset["alpha"] == has_alpha,
             f"{name}: unexpected PNG alpha channel metadata")

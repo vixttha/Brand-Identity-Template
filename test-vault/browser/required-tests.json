@@ -1,0 +1,13 @@
+[
+  "PNG-010 decodes registered rgba.png with the expected dimensions and pixels",
+  "PNG-010 decodes registered indexed.png with the expected dimensions and pixels",
+  "PNG-010 decodes registered grayscale-alpha.png with the expected dimensions and pixels",
+  "PNG-010 decodes registered rgb.png with the expected dimensions and pixels",
+  "PNG-012 decodes a truecolor transparency key without losing other colors",
+  "PNG-012 converts 16-bit samples while preserving the alpha pattern",
+  "PNG-012 reconstructs a diagonal across all seven Adam7 passes",
+  "PNG-011 composites rgba.png over a light background",
+  "PNG-011 composites indexed.png over a light background",
+  "PNG-011 composites rgba.png over a dark background",
+  "PNG-011 composites indexed.png over a dark background"
+]

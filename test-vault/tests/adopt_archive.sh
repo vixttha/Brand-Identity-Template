@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Download the public archives and use them in an existing Git project.
+# Adopt the checked-out candidate ZIP and the public archives into disposable Git projects.
 set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
+
+mode=${1:-}
+if (( $# > 1 )) || [[ -n "$mode" && "$mode" != --candidate-only ]]; then
+  printf 'Usage: %s [--candidate-only]\n' "$0" >&2
+  exit 2
+fi
 
 source_repo=$(git rev-parse --show-toplevel)
 workspace=$(mktemp -d)
@@ -33,6 +39,50 @@ compare_checkout() {
   rm -r -- "$workspace/expected"
 }
 
+adopt_kit() (
+  local extracted=$1 consumer=$2 original_head
+  mkdir -p "$consumer/docs"
+  git -C "$consumer" init -q
+  printf '# Existing instructions\n' > "$consumer/AGENTS.md"
+  printf '# Existing README\n' > "$consumer/README.md"
+  printf '# Existing product evidence\n' > "$consumer/docs/evidence.md"
+  git -C "$consumer" add .
+  git -C "$consumer" -c user.name='Vault fixture' -c user.email='vault@example.invalid' \
+    -c commit.gpgsign=false commit -qm 'Existing project'
+  original_head=$(git -C "$consumer" rev-parse HEAD)
+
+  cd "$consumer"
+  cp -R "$extracted/brand-identity" .
+  python3 brand-identity/verify.py
+  python3 - <<'PY'
+import json
+from pathlib import Path
+
+manifest = Path("brand-identity/09-assets/manifest.json")
+data = json.loads(manifest.read_text(encoding="utf-8"))
+assert data["kind"] == "template" and data["assets"] == []
+data["kind"] = "project"
+manifest.write_text(json.dumps(data) + "\n", encoding="utf-8")
+PY
+  python3 brand-identity/verify.py
+  cmp -- "$extracted/brand-identity/LICENSE" brand-identity/LICENSE
+  [[ "$(git rev-parse HEAD)" == "$original_head" ]]
+  [[ "$(git status --porcelain --untracked-files=normal)" == '?? brand-identity/' ]]
+)
+
+candidate=$(git rev-parse HEAD)
+git archive --format=zip --prefix="Brand-Identity-Template-$candidate/" \
+  --output="$workspace/candidate.zip" "$candidate"
+unzip -tq "$workspace/candidate.zip"
+extract "$workspace/candidate.zip" "$workspace/candidate"
+compare_checkout "$candidate" "$result"
+adopt_kit "$result" "$workspace/Candidate project with spaces"
+printf 'ZIP-005 PASS: candidate %s ZIP validates and adopts into an existing project.\n' "$candidate"
+
+if [[ "$mode" == --candidate-only ]]; then
+  exit 0
+fi
+
 # Test the URL readers actually use, and avoid comparing snapshots captured on
 # opposite sides of a concurrent update of main.
 main_url=$(sed -n 's/.*\[Brand Identity Template ZIP\](\([^)]*\)).*/\1/p' README.md)
@@ -62,33 +112,6 @@ compare_checkout "$release_sha" "$result"
 release_tree=$result
 printf 'ZIP-002 PASS: tagged ZIP matches the release kit and license at %s.\n' "$release_sha"
 
-consumer="$workspace/Existing product with spaces"
-mkdir -p "$consumer/docs"
-git -C "$consumer" init -q
-printf '# Existing instructions\n' > "$consumer/AGENTS.md"
-printf '# Existing README\n' > "$consumer/README.md"
-printf '# Existing product evidence\n' > "$consumer/docs/evidence.md"
-git -C "$consumer" add .
-git -C "$consumer" -c user.name='Vault fixture' -c user.email='vault@example.invalid' \
-  -c commit.gpgsign=false commit -qm 'Existing project'
-original_head=$(git -C "$consumer" rev-parse HEAD)
-
-cd "$consumer"
-cp -R "$release_tree/brand-identity" .
-python3 brand-identity/verify.py
-python3 - <<'PY'
-import json
-from pathlib import Path
-
-manifest = Path("brand-identity/09-assets/manifest.json")
-data = json.loads(manifest.read_text(encoding="utf-8"))
-assert data["kind"] == "template" and data["assets"] == []
-data["kind"] = "project"
-manifest.write_text(json.dumps(data) + "\n", encoding="utf-8")
-PY
-python3 brand-identity/verify.py
+adopt_kit "$release_tree" "$workspace/Existing product with spaces"
 printf 'ZIP-003 PASS: documented adoption works from an existing project path with spaces.\n'
-cmp -- "$release_tree/brand-identity/LICENSE" brand-identity/LICENSE
-[[ "$(git rev-parse HEAD)" == "$original_head" ]]
-[[ "$(git status --porcelain --untracked-files=normal)" == '?? brand-identity/' ]]
 printf 'ZIP-004 PASS: original host files, Git history and copied license are preserved.\n'

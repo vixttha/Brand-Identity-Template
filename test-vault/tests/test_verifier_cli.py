@@ -178,6 +178,24 @@ class VerifierCLITests(AdoptedKit):
                 self.assert_rejected(self.run_verifier(), reason)
                 record[key] = original
 
+    def test_png_dimensions_require_json_integers(self):
+        self.add_assets("logo")
+        record = self.manifest["assets"][0]
+        for key, invalid in (("width", 4.0), ("height", 1.0), ("height", True),
+                             ("width", "4"), ("height", None)):
+            with self.subTest(field=key, invalid=invalid):
+                self.manifest["assets"][0] = {**record, key: invalid}
+                self.save_manifest()
+                self.assert_rejected(self.run_verifier(), "PNG dimensions must be integers")
+        for field in ("width", "height"):
+            with self.subTest(missing=field):
+                self.manifest["assets"][0] = {key: value for key, value in record.items() if key != field}
+                self.save_manifest()
+                self.assert_rejected(self.run_verifier(), "PNG dimensions must be integers")
+        self.manifest["assets"][0] = record
+        self.save_manifest()
+        self.assert_accepted(self.run_verifier())
+
     def test_blank_license_fails(self):
         (self.kit / "LICENSE").write_text(" \n", encoding="utf-8")
         self.assert_rejected(self.run_verifier(), "LICENSE file is empty")
