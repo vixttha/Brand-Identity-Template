@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -24,6 +25,7 @@ class VaultCLI(unittest.TestCase):
         directory = TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         self.root = Path(directory.name)
+        self.vault = VAULT
         self.catalog = self.root / "cases.md"
         self.catalog.write_text(HEADER + ROW, encoding="utf-8")
 
@@ -31,7 +33,7 @@ class VaultCLI(unittest.TestCase):
         env = os.environ.copy()
         env.pop("GITHUB_STEP_SUMMARY", None)
         return subprocess.run(
-            [sys.executable, "-B", str(VAULT / script), *arguments],
+            [sys.executable, "-B", str(self.vault / script), *arguments],
             cwd=self.root, env=env, capture_output=True, text=True, encoding="utf-8",
             timeout=15,
         )
@@ -44,6 +46,17 @@ class CatalogTests(VaultCLI):
     def test_escaped_pipes_and_fenced_examples_do_not_change_case_count(self):
         row = ROW.replace("Python", r"Python \| CLI")
         self.catalog.write_text("```markdown\n" + HEADER + ROW + "```\n\n" + HEADER + row,
+                                encoding="utf-8")
+        result = self.validate()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("1 unique cases across 1 topics", result.stdout)
+
+    def test_catalog_ignores_comments_code_and_unrelated_tables(self):
+        commented = "<!-- optional example\n" + HEADER + ROW + "-->\n\n"
+        indented = "".join(f"    {line}\n" for line in (HEADER + ROW).splitlines())
+        unrelated = "| Language | Runner |\n| --- | --- |\n| Python | Ubuntu |\n\n"
+        catalog = "\n".join(line.strip("| ") for line in (HEADER + ROW).splitlines())
+        self.catalog.write_text(commented + indented + "\n" + unrelated + catalog + "\n",
                                 encoding="utf-8")
         result = self.validate()
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -83,10 +96,15 @@ class CatalogTests(VaultCLI):
 class ReceiptTests(VaultCLI):
     def setUp(self):
         super().setUp()
+        self.vault = self.root / "test-vault"
+        self.vault.mkdir()
+        for name in ("verify_receipts.py", "validate_catalog.py", "source_commit.py"):
+            shutil.copyfile(VAULT / name, self.vault / name)
         subprocess.run(["git", "init", "-q"], cwd=self.root, check=True)
+        subprocess.run(["git", "add", "test-vault", "cases.md"], cwd=self.root, check=True)
         subprocess.run(
             ["git", "-c", "user.name=Vault Test", "-c", "user.email=vault@example.invalid",
-             "-c", "commit.gpgsign=false", "commit", "--allow-empty", "-qm", "Fixture input"],
+             "-c", "commit.gpgsign=false", "commit", "-qm", "Fixture input"],
             cwd=self.root, check=True,
         )
         self.checkout = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.root,
@@ -112,9 +130,14 @@ class ReceiptTests(VaultCLI):
         write_json(self.receipts / (filename or f"{check}.json"),
                    {**self.receipt, "check_id": check, **fields})
 
-    def verify(self, *, use_evidence=True, attempt="2"):
-        args = ["--case", str(self.case_path), "--catalog", str(self.catalog), "--receipts",
-                str(self.receipts), "--run-id", "1234", "--attempt", attempt]
+    def verify(self, *, use_evidence=True, attempt="2", catalog=None):
+        args = [
+            "--case", str(self.case_path),
+            "--catalog", str(catalog or self.catalog),
+            "--receipts", str(self.receipts),
+            "--run-id", "1234",
+            "--attempt", attempt,
+        ]
         if use_evidence:
             args.extend(("--evidence", str(self.evidence)))
         return self.run_cli("verify_receipts.py", *args)
@@ -128,7 +151,30 @@ class ReceiptTests(VaultCLI):
 
     def test_shared_observation_passes_with_both_independent_receipts(self):
         self.assert_verdict(self.verify(), "PASS", f"Checkout: {self.checkout}",
-                            "| python | PASS |", "| browser | PASS |", "Attempt: 2")
+                            "| python | PASS |", "| browser | PASS |", "Attempt: 2",
+                            "Legacy receipt v1")
+
+    def test_v2_receipts_bind_exact_plan_bytes(self):
+        self.case["schema_version"] = 2
+        write_json(self.case_path, self.case)
+        plan = self.case_path.read_bytes()
+        original = hashlib.sha256(plan).hexdigest()
+        for check in self.case["required_checks"]:
+            self.write_receipt(check, schema_version=2, case_plan_sha256=original)
+        self.assert_verdict(self.verify(), "PASS", f"Case plan SHA-256: {original}")
+        self.case_path.write_bytes(plan + b"\n")
+        self.assert_verdict(self.verify(), "FAIL", "| python | INVALID |", "| browser | INVALID |",
+                            "case_plan_sha256 does not match")
+        self.case_path.write_bytes(plan)
+        self.write_receipt("browser")
+        self.assert_verdict(self.verify(), "FAIL", "| browser | INVALID |")
+
+    def test_receipts_require_a_clean_checkout_and_tracked_catalog(self):
+        untracked = self.root / "untracked.md"
+        shutil.copyfile(self.catalog, untracked)
+        self.assert_verdict(self.verify(catalog=untracked), "FAIL", "source must be tracked")
+        self.catalog.write_text(HEADER + ROW + "\nEdited tracked catalog\n", encoding="utf-8")
+        self.assert_verdict(self.verify(), "FAIL", "commit tracked changes")
 
     def test_post_run_edit_of_shared_evidence_fails_both_receipts(self):
         self.evidence.write_bytes(b"Changed input\n")

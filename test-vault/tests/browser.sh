@@ -4,6 +4,11 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 export PYTHONDONTWRITEBYTECODE=1
 
+plan=test-vault/tests/png-browser-case.json
+checkout=$(python3 test-vault/source_commit.py "$plan" test-vault/cases.md \
+  test-vault/tests/browser.sh test-vault/tests/png_fixtures.py \
+  brand-identity/verify.py test-vault/browser/png.spec.cjs)
+
 workspace=$(mktemp -d)
 trap 'rm -rf -- "$workspace"' EXIT
 mkdir -p "$workspace/project"
@@ -29,28 +34,41 @@ receipt_dir="$workspace/receipts"
 mkdir "$receipt_dir"
 run_id=${GITHUB_RUN_ID:-1}
 attempt=${GITHUB_RUN_ATTEMPT:-1}
-
-record_receipt() {
-  python3 - "$receipt_dir/$1.json" "$1" "$2" "$3" "$manifest" "$run_id" "$attempt" <<'PY'
+bindings=$(python3 - "$plan" "$manifest" <<'PYTHON'
 import hashlib
 import json
 from pathlib import Path
-import platform
-import subprocess
 import sys
 
-out, check, runtime, status, manifest, run_id, attempt = sys.argv[1:]
-checkout = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+plan = Path(sys.argv[1]).read_bytes()
+manifest = Path(sys.argv[2]).read_bytes()
+print(json.loads(plan)["case_id"], hashlib.sha256(plan).hexdigest(),
+      hashlib.sha256(manifest).hexdigest())
+PYTHON
+)
+read -r case_id case_plan_sha256 evidence_sha256 <<< "$bindings"
+
+record_receipt() {
+  python3 - "$receipt_dir/$1.json" "$1" "$2" "$3" "$checkout" "$run_id" "$attempt" \
+    "$case_id" "$case_plan_sha256" "$evidence_sha256" <<'PY'
+import json
+from pathlib import Path
+import platform
+import sys
+
+(out, check, runtime, status, checkout, run_id, attempt,
+ case_id, case_plan_sha256, evidence_sha256) = sys.argv[1:]
 receipt = {
-    "schema_version": 1,
-    "case_id": "PNG-010",
+    "schema_version": 2,
+    "case_id": case_id,
     "check_id": check,
     "checkout_sha": checkout,
     "run_id": run_id,
     "attempt": attempt,
     "environment": {"os": platform.platform(), "runtime": runtime},
     "status": status,
-    "evidence_sha256": hashlib.sha256(Path(manifest).read_bytes()).hexdigest(),
+    "case_plan_sha256": case_plan_sha256,
+    "evidence_sha256": evidence_sha256,
 }
 Path(out).write_text(json.dumps(receipt) + "\n", encoding="utf-8")
 PY
@@ -70,5 +88,5 @@ else
 fi
 record_receipt chromium "Node.js $(node --version)" "$browser_status"
 
-python3 test-vault/verify_receipts.py --case test-vault/tests/png-browser-case.json \
+python3 test-vault/verify_receipts.py --case "$plan" \
   --receipts "$receipt_dir" --evidence "$manifest" --run-id "$run_id" --attempt "$attempt"
