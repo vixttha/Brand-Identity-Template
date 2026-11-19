@@ -1,0 +1,32 @@
+name: Replay standalone checkpoint versions
+
+on:
+  push:
+    branches: [verify/standalone-v0.0.1]
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  replay:
+    if: github.event.repository.private == false
+    name: Replay ten checkpoints on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.10'
+      - name: Replay exact snapshot tests, adoption and acceptance checks
+        run: python .github/scripts/replay_checkpoints.py
