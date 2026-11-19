@@ -1,0 +1,30 @@
+{
+  "kit_version": "v0.0.1",
+  "kind": "project",
+  "assets": [
+    {
+      "file": "branchwell-mark.png",
+      "role": "logo",
+      "alt": "Three-node graphite branch symbol",
+      "source": "Single-weight, three connected terminals and a square junction in graphite on alpha. No text.",
+      "status": "draft",
+      "generated_with": "@Images",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true,
+      "sha256": "8d9abdbc2fdb72a961cffb33d13ef4fe20c65bed6a9798a19e962540a24525f6"
+    },
+    {
+      "file": "branchwell-wordmark.png",
+      "role": "wordmark",
+      "alt": "Branchwell wordmark",
+      "source": "Exact Branchwell spelling in a humanist condensed sans, graphite on alpha. Text only.",
+      "status": "draft",
+      "generated_with": "@Images",
+      "width": 2172,
+      "height": 724,
+      "alpha": true,
+      "sha256": "8f155867526f60818042e29b00513c89543e5407cf7f3c4d614fd9cdcb350d0f"
+    }
+  ]
+}

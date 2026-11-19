@@ -1,0 +1,74 @@
+{
+  "initial_category": "abstract mark",
+  "art_style": "Single-weight technical linework with square junctions and open negative space.",
+  "category_fit": {
+    "abstract mark": {
+      "fits": true,
+      "reason": "A branch pattern reads at navigation size and reflects source work."
+    },
+    "wordmark": {
+      "fits": true,
+      "reason": "Compact text reads well in the directory and can stand alone."
+    },
+    "emblem": {
+      "fits": true,
+      "reason": "An enclosed mark is orderly and can work as a repository avatar."
+    },
+    "mascot": {
+      "fits": false,
+      "reason": "A character would compete with the maintainer's task list."
+    }
+  },
+  "concepts": [
+    {
+      "id": "three-node-branch",
+      "category": "abstract mark",
+      "art_style": "Single-weight technical linework",
+      "example": "A three-node branch with a square main junction and open endpoints, placed left of Branchwell.",
+      "rationale": "Recognizable at 16px and related directly to repo work. The distinctive junction needs a reduction test.",
+      "scores": {
+        "brand_fit": 5,
+        "artistic_character": 4,
+        "distinctiveness": 4,
+        "versatility": 5
+      }
+    },
+    {
+      "id": "directory-wordmark",
+      "category": "wordmark",
+      "art_style": "Compact humanist sans composition",
+      "example": "Branchwell set as a compact standalone wordmark with a cut on the leading B stem.",
+      "rationale": "Legible in dense headers, with less recognition when only an icon fits.",
+      "scores": {
+        "brand_fit": 4,
+        "artistic_character": 4,
+        "distinctiveness": 3,
+        "versatility": 4
+      }
+    },
+    {
+      "id": "tabbed-emblem",
+      "category": "emblem",
+      "art_style": "Geometric outline and stepped silhouette",
+      "example": "A small stepped directory tab enclosing a single branch node and leading stem.",
+      "rationale": "Strong favicon silhouette with less room to show the branch at its smallest size.",
+      "scores": {
+        "brand_fit": 4,
+        "artistic_character": 4,
+        "distinctiveness": 4,
+        "versatility": 4
+      }
+    }
+  ],
+  "selected_concept": "three-node-branch",
+  "selection_reason": "Highest weighted score. It pairs the clearest repo association with a viable one-color navigation scale.",
+  "names": {
+    "product": "Branchwell",
+    "wordmark": "Branchwell"
+  },
+  "confirmation": {
+    "product": "Branchwell",
+    "wordmark": "Branchwell",
+    "reference": "Owner confirmed Keep Branchwell for both exact names on 2026-11-19."
+  }
+}

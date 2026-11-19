@@ -17,3 +17,4 @@ jobs:
         run: |
           test -s examples/branchwell/README.md
           python3 brand-identity/verify.py
+          python3 examples/branchwell/brand-identity/verify.py
