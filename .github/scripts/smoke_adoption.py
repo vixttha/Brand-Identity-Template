@@ -41,6 +41,7 @@ def run():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         manifest["kind"] = "project"
         write_record(manifest_path, manifest)
+        subprocess.run(command, cwd=consumer, check=True)
         write_record(kit / "01-strategy" / "creative-decision.json", scored_decision())
         subprocess.run([*command, "--ready-for-artwork"], cwd=consumer, check=True)
 
@@ -66,8 +67,14 @@ def run():
                 "source": "Synthetic CI fixture that exercises the @Images inventory field",
                 "status": "test",
             })
-        write_record(manifest_path, manifest)
-        subprocess.run(command, cwd=consumer, check=True)
+            write_record(manifest_path, manifest)
+            subprocess.run(command, cwd=consumer, check=True)
+            if role == "logo":
+                early_handoff = subprocess.run(
+                    [*command, "--ready-for-handoff"], cwd=consumer, capture_output=True, text=True,
+                )
+                assert early_handoff.returncode and "needs both logo and wordmark PNGs" in early_handoff.stderr
+        subprocess.run([*command, "--ready-for-handoff"], cwd=consumer, check=True)
         assert (consumer / "AGENTS.md").read_bytes() == instructions
         assert (consumer / "README.md").read_bytes() == readme
         assert (kit / "LICENSE").is_file()

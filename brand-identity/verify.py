@@ -131,6 +131,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ready-for-artwork", action="store_true",
                         help="require a scored direction and explicit owner name confirmation")
+    parser.add_argument("--ready-for-handoff", action="store_true",
+                        help="require a project inventory with both logo and wordmark PNGs")
     args = parser.parse_args()
     check_docs()
     inventory = json.loads((ASSETS / "manifest.json").read_text(encoding="utf-8"))
@@ -144,9 +146,10 @@ def main():
     decision = json.loads(DECISION.read_text(encoding="utf-8"))
     require(isinstance(decision, dict), "The creative decision must be a record")
     validate_production(kind, assets, args.ready_for_artwork, decision)
-    if assets:
+    if args.ready_for_handoff:
+        require(kind == "project", "Start a project kit before checking handoff")
         require({"logo", "wordmark"} <= {asset["role"] for asset in assets},
-                "A populated project kit needs both logo and wordmark PNGs")
+                "Project handoff needs both logo and wordmark PNGs")
     if args.ready_for_artwork:
         print("Creative decision and owner name confirmation recorded")
     for asset in assets:
