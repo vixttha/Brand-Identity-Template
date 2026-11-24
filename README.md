@@ -13,3 +13,7 @@ Use the [brand identity kit](brand-identity/README.md) to develop your product's
 ## Review a template change
 
 The pull request check runs on GitHub's combined base and head commit. The Actions job summary records both parents and the tested commit. Before merging, compare the recorded base and head with the current PR. If either changed, update the PR branch with the latest base and require a passing run for the new combination. Branch push checks cover the source checkout.
+
+## Engineering ecosystem
+
+[Owner-approved six architectural laws](ENGINEERING-LAWS.md) apply to this product. Standalone operation and owner authority remain unchanged. The product has no mandatory coordination-tool dependency.

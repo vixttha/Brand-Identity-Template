@@ -25,3 +25,18 @@ In your copied kit, set `kind` to `"project"` in [the asset manifest](09-assets/
 5. Review exact lettering, silhouette in one color, small-size use, light/dark placement, and the combined lockup. Register the files and record owner feedback. Roll out only to authorized surfaces.
 
 Run `python3 brand-identity/verify.py` to check the kit and any registered PNGs. A new project can pass inventory checks while it waits for confirmation. A project with registered PNGs requires a complete creative decision. Draft and test exports can be registered as the inventory grows. Run `python3 brand-identity/verify.py --ready-for-handoff` before handoff to require at least one logo PNG and one wordmark PNG, each with manifest status `"approved"`. The verifier checks the record and asset files. The owner reviews the cited confirmation and the visual work.
+
+## Owner-approved engineering ecosystem laws
+
+Decision ENGINEERING-ECOSYSTEM-LAWS-001 (2026-11-24). Mission: Build a toolkit that gives compatible LLM agents a structured engineering environment, rather than building another AI model.
+
+<!-- engineering-laws:start -->
+1. **Independence:** Every tool must remain independently installable, usable, versioned and maintained.
+2. **Composability:** Installing additional tools expands the agent's capabilities without creating mandatory dependencies.
+3. **Portability:** No mandatory AI provider, model, agent harness or paid execution service.
+4. **Persistence:** Project knowledge, decisions, progress and evidence survive the termination of an AI session.
+5. **Verification:** Development claims must be supported by reproducible, revision-bound evidence.
+6. **Owner authority:** The human retains control over scope, architectural decisions, integration and releases.
+<!-- engineering-laws:end -->
+
+Remain standalone. Other tools are optional; their absence must not block normal operation. Preserve project-local authority and evidence; never automatically install, merge, synchronize or write to another tool's branch. No mandatory seventh coordinator, paid service or AI provider. Existing product scope remains authoritative. Change these laws only by explicit owner approval.
