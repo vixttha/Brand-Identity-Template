@@ -10,3 +10,14 @@
 For local evidence stored elsewhere in the adopting repository, use a path relative to this brief. For example, if the repository has `docs/evidence.md` at its root, use `../../docs/evidence.md` as the link target. Local links must point to an existing target inside the repository after resolving symlinks.
 
 Start with the [naming record](../02-naming/naming.md) and [visual system](../06-visual-system/system.md).
+
+## Identity maintenance record (repeat for each material change)
+
+- Status: proposed / owner-approved / superseded (choose accurately).
+- Date and stable decision reference; exact source revision where available.
+- Current purpose, audience, positioning, promises and non-goals.
+- Prior decision and what is superseded (or unchanged); unresolved contradictions.
+- Artwork impact: none / name or wordmark review / visual review; do not infer approval.
+- Optional links to ideas/features or host engineering decisions; no authority transfer.
+
+For a locked visual identity, follow [post-lock maintenance](../README.md#maintain-product-identity-after-the-visual-lock) rather than starting a new kit.
