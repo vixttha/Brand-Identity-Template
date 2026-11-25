@@ -82,6 +82,24 @@ def run():
             asset["status"] = "approved"
         write_record(manifest_path, manifest)
         subprocess.run([*command, "--ready-for-handoff"], cwd=consumer, check=True)
+        # Replay an owner-approved mission-only change after artwork lock.
+        # Synthetic manual workflow, not a live agent or semantic approval test.
+        protected = [kit / "01-strategy" / "creative-decision.json",
+                     manifest_path, *assets.glob("*.png")]
+        before = {path: path.read_bytes() for path in protected}
+        brief = kit / "01-strategy" / "brief.md"
+        history = brief.read_bytes()
+        with brief.open("ab") as stream:
+            stream.write(b"\n## Synthetic approved mission revision\n"
+                         b"Decision: example-2; supersedes mission only.\n"
+                         b"Purpose: preserve project records; artwork impact: none.\n")
+        subprocess.run([*command, "--ready-for-handoff"], cwd=consumer, check=True)
+        assert brief.read_bytes().startswith(history)
+        assert all(path.read_bytes() == data for path, data in before.items())
+        assert {path for path in assets.glob("*.png")} == set(protected[2:])
+        assert subprocess.check_output(["git", "for-each-ref", "refs/heads"],
+                                       cwd=consumer) == b""
+        print("PASS: populated identity maintenance preserved locked artwork and prior brief")
         assert (consumer / "AGENTS.md").read_bytes() == instructions
         assert (consumer / "README.md").read_bytes() == readme
         (kit / "LICENSE").unlink()

@@ -26,6 +26,17 @@ In your copied kit, set `kind` to `"project"` in [the asset manifest](09-assets/
 
 Run `python3 brand-identity/verify.py` to check the kit and any registered PNGs. A new project can pass inventory checks while it waits for confirmation. A project with registered PNGs requires a complete creative decision. Draft and test exports can be registered as the inventory grows. Run `python3 brand-identity/verify.py --ready-for-handoff` before handoff to require at least one logo PNG and one wordmark PNG, each with manifest status `"approved"`. The verifier checks the record and asset files. The owner reviews the cited confirmation and the visual work.
 
+## Maintain product identity after the visual lock
+
+Discover the existing project kit and resolve its current revision before proposing another workspace. Read the strategy brief, messaging, creative decision and review records. If access or the current revision cannot be established, report it as unverified; do not treat missing access as missing installation. Existing approved visuals do not make the product definition immutable.
+
+For each new discussion:
+1. Separate identity (purpose, audience, positioning, promises, non-goals) from ideas/features and engineering policy. Store identity in the existing brief and messaging. Refer ideas/features to an existing optional tracker, if present and authorized; refer technical rules and acceptance to the host's own canonical decisions. Without peers, record relevant context or unresolved questions in the existing brief; do not install another tool or create a permanent branch as a fallback.
+2. Check earlier owner decisions and current claims; flag contradictory or stale approval for owner review. Record proposals as proposals. Require explicit write permission and owner approval of the changed identity before marking it approved.
+3. Append a dated decision with exact source, current identity, rationale, prior decision and supersession boundary. Preserve prior decisions. Reconcile the current brief and messaging without replacing the project kit.
+4. If only positioning or mission changes, leave creative decision, name/wordmark confirmation, asset manifest and approved PNG bytes unchanged. If the exact name, wordmark or visual claim must change, use the existing confirmation and artwork review procedure for the affected scope; never silently unlock artwork.
+5. Re-run the existing verifier (handoff mode for an approved kit), check the diff and retained asset hashes, and return the owner-facing changes. A structural pass is not semantic validation or permission. A temporary review branch is acceptable; a new permanent workspace is not the default.
+
 ## Owner-approved engineering ecosystem laws
 
 Decision ENGINEERING-ECOSYSTEM-LAWS-001 (2026-11-24). Mission: Build a toolkit that gives compatible LLM agents a structured engineering environment, rather than building another AI model.
@@ -44,7 +55,7 @@ Remain standalone. Other tools are optional; their absence must not block normal
 ## Agent capability discovery — v1
 
 <!-- agent-capability:v1
-{"schema_version":1,"id":"brand-identity","branch":"Brand-Identity","entrypoint":"README.md","scope":"Brand identity and owner-approved visual assets","required_ecosystem_tools":[],"authority":"owner","discovery":"read-only","versioning":"independent"}
+{"schema_version":1,"id":"brand-identity","branch":"Brand-Identity","entrypoint":"README.md","scope":"Product identity, positioning and owner-approved visual assets","required_ecosystem_tools":[],"authority":"owner","discovery":"read-only","versioning":"independent"}
 -->
 
 A compatible agent may enumerate the target repository's branch refs, resolve this branch to a commit, and read its entry point at that exact commit. Read-only discovery confers no execution, write, integration or release authority. If this branch or marker is absent, the tool is absent or legacy/unverified; continue independently. Check the target's own instructions and owner scope before any action. The marker describes a capability, not a required registry or package version.

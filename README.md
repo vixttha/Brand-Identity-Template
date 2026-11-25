@@ -10,6 +10,8 @@ Use the [brand identity kit](brand-identity/README.md) to develop your product's
 4. Start the [creative brief](brand-identity/01-strategy/brief.md). Follow the [creative direction workflow](brand-identity/01-strategy/creative-direction.md) before generating artwork with @Images.
 5. From your repository root, run `python3 brand-identity/verify.py`. On Windows, use `py -3 brand-identity/verify.py`. The verifier uses Python 3.10+ and its standard library.
 
+For an already adopted kit, use [post-lock identity maintenance](brand-identity/README.md#maintain-product-identity-after-the-visual-lock); do not repeat installation or artwork generation merely because the product direction evolved.
+
 ## Review a template change
 
 The pull request check runs on GitHub's combined base and head commit. The Actions job summary records both parents and the tested commit. Before merging, compare the recorded base and head with the current PR. If either changed, update the PR branch with the latest base and require a passing run for the new combination. Branch push checks cover the source checkout.
@@ -21,7 +23,7 @@ The pull request check runs on GitHub's combined base and head commit. The Actio
 ## Agent capability discovery — v1
 
 <!-- agent-capability:v1
-{"schema_version":1,"id":"brand-identity","branch":"Brand-Identity","entrypoint":"README.md","scope":"Brand identity and owner-approved visual assets","required_ecosystem_tools":[],"authority":"owner","discovery":"read-only","versioning":"independent"}
+{"schema_version":1,"id":"brand-identity","branch":"Brand-Identity","entrypoint":"README.md","scope":"Product identity, positioning and owner-approved visual assets","required_ecosystem_tools":[],"authority":"owner","discovery":"read-only","versioning":"independent"}
 -->
 
 A compatible agent may enumerate the target repository's branch refs, resolve this branch to a commit, and read its entry point at that exact commit. Read-only discovery confers no execution, write, integration or release authority. If this branch or marker is absent, the tool is absent or legacy/unverified; continue independently. Check the target's own instructions and owner scope before any action. The marker describes a capability, not a required registry or package version.
